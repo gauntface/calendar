@@ -6,6 +6,8 @@ cache:
 node_js:
 - stable
 before_install:
+- npm install firebase-tools -g
 install:
+- npm run build
 script:
 - firebase deploy --token ${FIREBASE_CI_TOKEN}
