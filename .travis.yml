@@ -10,5 +10,4 @@ before_install:
 install:
 - npm run build
 script:
-- firebase use default --token "$FIREBASE_TOKEN"
-- firebase deploy --token "$FIREBASE_TOKEN" --non-interactive
+- firebase deploy --token "$FIREBASE_TOKEN" --project default --non-interactive

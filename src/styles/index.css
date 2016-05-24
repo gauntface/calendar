@@ -1,6 +1,11 @@
+@import "variables/dimens.css";
+@import "variables/fonts.css";
 
-* {
-    -webkit-tap-highlight-color: transparent;
+html, body {
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
 }
 
 html {
@@ -8,60 +13,62 @@ html {
   height: 100%;
   min-height: 100%;
 
-  font-size: $base-font-size;
-  line-height: $base-line;
-}
-
-html, body {
-    margin: 0;
-    padding: 0;
+  font-size: var(--base-font-size);
+  line-height: var(--base-line);
 }
 
 body {
-  width: 100%;
   min-height: 100%;
 
   box-sizing: border-box;
 
-  overflow-wrap: break-word;
+  background-color: $page-bg-color;
+  color: $font-color;
+  font-family: var(--base-font-family);
 }
 
 h1, h2, h3, h4, h5, h6, p {
   margin-top: 0;
-  margin-bottom: $base-line * 0.5;
+  margin-bottom: calc(var(--base-line) * 0.5);
   padding: 0;
-}
-
-h1, h2, h3, h4, h5, h6 {
+  font-family: var(--title-font-family);
   font-weight: normal;
 }
 
 h1 {
-    @include typography-font-size($font-size-h1);
+    font-size: var(--font-size-h1);
+    line-height: calc((var(--font-size-h1) / var(--base-line)) * (var(--base-line) / var(--font-size-h1)));
 }
 
 h2 {
-    @include typography-font-size($font-size-h2);
+    font-size: var(--font-size-h2);
+    line-height: calc((var(--font-size-h2) / var(--base-line)) * (var(--base-line) / var(--font-size-h2)));
 }
 
 h3 {
-    @include typography-font-size($font-size-h3);
+  font-size: var(--font-size-h3);
+  line-height: calc((var(--font-size-h3) / var(--base-line)) * (var(--base-line) / var(--font-size-h3)));
 }
 
 h4 {
-    @include typography-font-size($font-size-h4);
+  font-size: var(--font-size-h4);
+  line-height: calc((var(--font-size-h4) / var(--base-line)) * (var(--base-line) / var(--font-size-h4)));
 }
 
 h5 {
-    @include typography-font-size($font-size-h5);
+  font-size: var(--font-size-h5);
+  line-height: calc((var(--font-size-h5) / var(--base-line)) * (var(--base-line) / var(--font-size-h5)));
 }
 
 h6 {
-    @include typography-font-size($font-size-h6);
+  font-size: var(--font-size-h6);
+  line-height: calc((var(--font-size-h6) / var(--base-line)) * (var(--base-line) / var(--font-size-h6)));
 }
 
 .small-text {
-  @include typography-font-size($small-font-size);
+  font-size: var(--small-font-size);
+  line-height: calc((var(--small-font-size) / var(--base-line)) * (var(--base-line) / var(--small-font-size)));
+
   letter-spacing: 1.5;
 }
 
@@ -71,10 +78,10 @@ p {
 
 a {
   text-decoration: underline;
+}
 
-  &:hover {
-    text-decoration: none;
-  }
+a:hover {
+  text-decoration: none;
 }
 
 img {
@@ -83,7 +90,7 @@ img {
 }
 
 hr {
-  margin: $base-line;
+  margin: var(--base-line);
 }
 
 ul, ol {
@@ -99,22 +106,6 @@ main {
 
 .hidden {
   display: none !important;
-}
-
-@media (min-width: $break-xsmall) {
-  h1, h2, h3, h4, h5, h6, p, ul, ol {
-    margin-bottom: $base-line;
-  }
-}
-
-body {
-  background-color: $page-bg-color;
-  color: $font-color;
-  font-family: $base-font-family;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: $title-font-family;
 }
 
 a {
@@ -217,5 +208,11 @@ body {
     flex-direction: row;
     flex: 1;
     align-self: auto;
+  }
+}
+
+@media (min-width: $break-xsmall) {
+  h1, h2, h3, h4, h5, h6, p, ul, ol {
+    margin-bottom: $base-line;
   }
 }

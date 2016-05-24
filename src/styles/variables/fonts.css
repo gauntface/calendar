@@ -1,0 +1,5 @@
+:root {
+  --code-font-family: "Monaco", "Andale Mono", "AndaleMono", "Droid Sans Mono", "DroidSansMono", "Courier", monospace;
+  --base-font-family: "Helvetica", "Futura", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, "Open Sans", sans-serif;
+  --title-font-family: var(--base-font-family);
+}
