@@ -10,4 +10,5 @@ before_install:
 install:
 - npm run build
 script:
+- firebase use default
 - firebase deploy --token "$FIREBASE_CI_TOKEN"
