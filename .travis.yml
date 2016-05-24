@@ -10,4 +10,4 @@ before_install:
 install:
 - npm run build
 script:
-- firebase deploy --token "${FIREBASE_CI_TOKEN}"
+- firebase deploy --token "$FIREBASE_CI_TOKEN"
