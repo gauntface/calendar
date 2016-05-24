@@ -15,6 +15,68 @@
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
     </head>
     <body>
-        <p>Hello world! Calendar.</p>
+      <main class="calendar-content js-calendar-content">
+        <header class="top-header">
+          <div class="weekinfo">
+            <h1>{2016</h1>
+            <h1>June</h1>
+            <h1>Week 00</h1>
+            <nav class="next-prev">
+              <a href="/calendar/2016/-1">Prev</a>
+              <a href="/calendar/2016/1">Next</a>
+            </nav>
+          </div>
+          <ul class="goals">
+            <li>Make a webapp</li>
+            <li>Make it good</li>
+            <li>..and fancy</li>
+          </ul>
+        </header>
+
+        <section class="weekdisplay js-drawing-display">
+          <div class="weekday">
+            <header>
+               <h1 class="weekday__title">Monday</h1>
+               <h3 class="weekday__subtitle">01</h3>
+            </header>
+          </div>
+
+          <div class="weekday">
+            <header>
+               <h1 class="weekday__title">Tuesday</h1>
+               <h3 class="weekday__subtitle">02</h3>
+            </header>
+          </div>
+
+          <div class="weekday">
+            <header>
+               <h1 class="weekday__title">Wednesday</h1>
+               <h3 class="weekday__subtitle">03</h3>
+            </header>
+          </div>
+
+          <div class="weekday">
+            <header>
+               <h1 class="weekday__title">Thursday</h1>
+               <h3 class="weekday__subtitle">04</h3>
+            </header>
+          </div>
+
+          <div class="weekday">
+            <header>
+               <h1 class="weekday__title">Friday</h1>
+               <h3 class="weekday__subtitle">05</h3>
+            </header>
+          </div>
+
+          <div class="weekday">
+            <header>
+               <h1 class="weekday__title">Weekend</h1>
+               <h3 class="weekday__subtitle">06 - 07</h3>
+            </header>
+          </div>
+          <canvas class="weekdisplay__paintingarea js-painting-area"></canvas>
+        </section>
+      </main>
     </body>
 </html>
