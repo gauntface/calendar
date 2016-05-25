@@ -1,5 +1,6 @@
 @import "variables/dimens.css";
 @import "variables/fonts.css";
+@import "variables/colors.css";
 
 html, body {
   width: 100%;
@@ -22,8 +23,8 @@ body {
 
   box-sizing: border-box;
 
-  background-color: $page-bg-color;
-  color: $font-color;
+  background-color: var(--page-bg-color);
+  color: var(--font-color);
   font-family: var(--base-font-family);
 }
 
@@ -109,7 +110,7 @@ main {
 }
 
 a {
-  color: $link-text-color;
+  color: var(--link-text-color);
 }
 
 body {
@@ -127,18 +128,17 @@ body {
 .top-header {
   display: flex;
 
-  padding-top: $base-line;
-  margin: 0 $base-line $base-line $base-line;
+  padding-top: var(--base-line);
+  margin: 0 var(--base-line) var(--base-line) var(--base-line);
 
   flex-direction: row;
   justify-content: space-between;
 }
 
-.weekinfo {
-  h1 {
-    margin-bottom: 0;
-    @include typography-font-size($base-line * 2);
-  }
+.weekinfo h1 {
+  margin-bottom: 0;
+  font-size: calc(var(--base-line) * 2);
+  line-height: 1;
 }
 
 .goals {
@@ -147,30 +147,37 @@ body {
   flex-direction: column;
   justify-content: flex-start;
 
-  font-family: $title-font-family;
+  font-family: var(--title-font-family);
   list-style: none;
   padding: 0;
-  margin: 0 0 $base-line 0;
+  margin: 0 0 var(--base-line) 0;
+}
 
-  li {
-    margin-bottom: ($base-line / 3);
-  }
+.goals li {
+  margin-bottom: calc(var(--base-line) / 3);
 }
 
 .next-prev {
-  font-family: $title-font-family;
-  a {
-    text-decoration: none;
-    padding: $base-line 0;
-  }
+  font-family: var(--title-font-family);
+}
 
-  a:first-child {
-    float: left;
-  }
+.next-prev:after {
+  content: '';
+  display: block;
+  clear: both;
+}
 
-  a:last-child {
-    float: right;
-  }
+.next-prev a {
+  text-decoration: none;
+  padding: var(--base-line) 0;
+}
+
+.next-prev a:first-child {
+  float: left;
+}
+
+.next-prev a:last-child {
+  float: right;
 }
 
 .weekdisplay {
@@ -190,7 +197,7 @@ body {
 }
 
 .weekday {
-  margin: 0 $base-line;
+  margin: 0 var(--base-line);
   flex: 1;
 }
 
@@ -199,7 +206,8 @@ body {
 }
 
 .weekday__title, .weekday__subtitle {
-  @include typography-font-size($font-size-h4);
+  font-size: var(--font-size-h4);
+  line-height: calc((var(--font-size-h4) / var(--base-line)) * (var(--base-line) / var(--font-size-h4)));
 }
 
 @media (min-width: 720px) {
@@ -211,8 +219,8 @@ body {
   }
 }
 
-@media (min-width: $break-xsmall) {
+@media (min-width: 300px) {
   h1, h2, h3, h4, h5, h6, p, ul, ol {
-    margin-bottom: $base-line;
+    margin-bottom: var(--base-line);
   }
 }

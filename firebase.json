@@ -1,6 +1,6 @@
 {
   "database": {
-    "rules": "build/database.rules.json"
+    "rules": "build/firebase/database.rules.json"
   },
   "hosting": {
     "public": "build",

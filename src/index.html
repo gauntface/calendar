@@ -73,5 +73,14 @@
           <canvas class="weekdisplay__paintingarea js-painting-area"></canvas>
         </section>
       </main>
+
+      <script src="https://www.gstatic.com/firebasejs/3.0.2/firebase.js"></script>
+      <script src="scripts/controllers/calendar-controller.js"></script>
+      <script>
+        (() => {
+          // Create new Calendar Controller to manage the UI
+          new CalendarController();
+        })();
+      </script>
     </body>
 </html>
