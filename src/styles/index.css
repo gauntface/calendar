@@ -135,12 +135,6 @@ body {
   justify-content: space-between;
 }
 
-.weekinfo h1 {
-  margin-bottom: 0;
-  font-size: calc(var(--base-line) * 2);
-  line-height: 1;
-}
-
 .goals {
   display: flex;
 
@@ -180,7 +174,7 @@ body {
   float: right;
 }
 
-.weekdisplay {
+gf-weekdisplay {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -194,20 +188,6 @@ body {
 
     width: 100%;
     height: 100%;
-}
-
-.weekday {
-  margin: 0 var(--base-line);
-  flex: 1;
-}
-
-.weekday__title {
-  margin-bottom: 0;
-}
-
-.weekday__title, .weekday__subtitle {
-  font-size: var(--font-size-h4);
-  line-height: calc((var(--font-size-h4) / var(--base-line)) * (var(--base-line) / var(--font-size-h4)));
 }
 
 @media (min-width: 720px) {

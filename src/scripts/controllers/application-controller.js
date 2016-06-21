@@ -1,7 +1,11 @@
 'use strict';
 
-class CalendarController {
+class CalendarAppController {
   constructor() {
+    if (! 'moment' in window) {
+      throw new Error('Moment.js is required to run this app');
+    }
+
     this.waitForDimensions.bind(this);
     this.onResize.bind(this);
     this._paths = [];
@@ -15,6 +19,9 @@ class CalendarController {
       storageBucket: "calendar-8fc2d.appspot.com"
     };
     firebase.initializeApp(firebaseConfig);
+
+    this.onStart();
+
     // this.onFBInit();
   }
 
@@ -77,13 +84,13 @@ class CalendarController {
   onStart() {
     console.log('CalendarController: onStart');
     this.initViews();
-    this.waitForDimensions()
+    /** this.waitForDimensions()
     .then(() => {
       return this.prepareDrawingEvents();
     })
     .catch(err => {
       console.error(err);
-    });
+    });**/
   }
 
   onUpdate() {
@@ -96,12 +103,14 @@ class CalendarController {
 
   initViews() {
     console.log('initViews()');
-    this._rootElement = document.querySelector('.js-calendar-content');
-    this._rootElement.classList.remove('hidden');
+    this._weekInfoComponent = document.querySelector('.js-weekinfo');
+    this._weekInfoComponent.setDate(moment());
+    // this._rootElement = document.querySelector('.js-calendar-content');
+    // this._rootElement.classList.remove('hidden');
 
-    this._drawingArea = document.querySelector('.js-drawing-display');
-    this._canvasArea = document.querySelector('.js-painting-area');
-    this._canvasContext = this._canvasArea.getContext('2d');
+    //this._drawingArea = document.querySelector('.js-drawing-display');
+    //this._canvasArea = document.querySelector('.js-painting-area');
+    //this._canvasContext = this._canvasArea.getContext('2d');
   }
 
   waitForDimensions() {
@@ -297,3 +306,8 @@ class CalendarController {
     this._canvasContext.stroke();
   }
 }
+
+
+window.GauntFace = window.GauntFace || {};
+window.GauntFace.CalendarApp = window.GauntFace.CalendarApp ||
+  new CalendarAppController();
