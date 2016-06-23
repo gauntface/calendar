@@ -102,9 +102,10 @@ class CalendarAppController {
   }
 
   initViews() {
-    console.log('initViews()');
     this._weekInfoComponent = document.querySelector('.js-weekinfo');
     this._weekInfoComponent.setDate(moment());
+    this._weekDisplayComponent = document.querySelector('.js-weekdisplay');
+    this._weekDisplayComponent.setDate(moment());
     // this._rootElement = document.querySelector('.js-calendar-content');
     // this._rootElement.classList.remove('hidden');
 
