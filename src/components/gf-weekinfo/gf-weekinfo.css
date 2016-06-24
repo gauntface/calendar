@@ -4,3 +4,27 @@
   font-size: calc(var(--base-line) * 2);
   line-height: 1;
 }
+
+.next-prev {
+  font-family: var(--title-font-family);
+}
+
+.next-prev:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.next-prev a {
+  color: var(--link-text-color);
+  text-decoration: none;
+  padding: var(--base-line) 0;
+}
+
+.next-prev a:first-child {
+  float: left;
+}
+
+.next-prev a:last-child {
+  float: right;
+}

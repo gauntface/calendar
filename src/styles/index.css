@@ -151,29 +151,6 @@ body {
   margin-bottom: calc(var(--base-line) / 3);
 }
 
-.next-prev {
-  font-family: var(--title-font-family);
-}
-
-.next-prev:after {
-  content: '';
-  display: block;
-  clear: both;
-}
-
-.next-prev a {
-  text-decoration: none;
-  padding: var(--base-line) 0;
-}
-
-.next-prev a:first-child {
-  float: left;
-}
-
-.next-prev a:last-child {
-  float: right;
-}
-
 .weekdisplay__paintingarea {
     position: absolute;
     top: 0;

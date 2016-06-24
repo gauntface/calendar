@@ -1,5 +1,7 @@
 'use strict';
 
+/* globals moment */
+
 (() => {
   const componentDoc = document.currentScript.ownerDocument;
 
@@ -7,7 +9,11 @@
     attachedCallback() {
       this._yearElement = this.shadowRoot.querySelector('.js-weekinfo-year');
       this._monthElement = this.shadowRoot.querySelector('.js-weekinfo-month');
-      this._weekNumElement = this.shadowRoot.querySelector('.js-weekinfo-weekNumber');
+      this._weekNumElement = this.shadowRoot.querySelector(
+        '.js-weekinfo-weekNumber');
+
+      this._prevWeekElement = this.shadowRoot.querySelector('.js-prev-week');
+      this._nextWeekElement = this.shadowRoot.querySelector('.js-next-week');
     }
 
     createdCallback() {
@@ -25,12 +31,21 @@
 
     setDate(newDate) {
       if (!(newDate instanceof moment)) {
-        throw new Error('setDate() expects an instance of a moment - i.e. setDate(moment())');
+        throw new Error('setDate() expects an instance of a moment -' +
+          ' i.e. setDate(moment())');
       }
 
       this._yearElement.textContent = newDate.year();
       this._monthElement.textContent = newDate.format('MMMM');
       this._weekNumElement.textContent = newDate.isoWeek();
+
+      const prevWeek = newDate.clone().subtract(7, 'days');
+      const nextWeek = newDate.clone().add(7, 'days');
+
+      console.log(`/${prevWeek.year()}/${prevWeek.isoWeek()}`);
+
+      this._prevWeekElement.href = `/${prevWeek.year()}/${prevWeek.isoWeek()}`;
+      this._nextWeekElement.href = `/${nextWeek.year()}/${nextWeek.isoWeek()}`;
     }
   }
 
