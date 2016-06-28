@@ -7,6 +7,7 @@ node_js:
 - stable
 before_install:
 - npm install firebase-tools -g
+- npm install
 install:
 - npm run build
 before_script:
