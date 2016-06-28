@@ -1,8 +1,10 @@
 'use strict';
 
+/* globals moment, firebase */
+
 class CalendarAppController {
   constructor() {
-    if (! 'moment' in window) {
+    if (!('moment' in window)) {
       throw new Error('Moment.js is required to run this app');
     }
 
@@ -23,6 +25,8 @@ class CalendarAppController {
     this.onStart();
 
     // this.onFBInit();
+
+    this.loaded = true;
   }
 
   /** loadFBSDK() {
