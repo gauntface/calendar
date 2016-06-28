@@ -9,5 +9,7 @@ before_install:
 - npm install firebase-tools -g
 install:
 - npm run build
+before_script:
+- npm run test
 script:
 - firebase deploy --token "$FIREBASE_TOKEN" --project default --non-interactive
