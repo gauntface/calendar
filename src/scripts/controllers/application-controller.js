@@ -2,6 +2,12 @@
 
 /* globals moment, firebase */
 
+const STATE = {
+  SHOW_SIGN_IN: 'show-sign-in',
+  SIGN_IN: 'sign-in',
+  LOAD_CALENDAR: 'load-calendar'
+};
+
 class CalendarAppController {
   constructor() {
     if (!('moment' in window)) {
@@ -21,6 +27,21 @@ class CalendarAppController {
       storageBucket: "calendar-8fc2d.appspot.com"
     };
     firebase.initializeApp(firebaseConfig);
+
+    this._loadingSpinner = document.querySelector('.js-loading-spinner');
+    this._weekInfoComponent = document.querySelector('.js-weekinfo');
+    this._weekDisplayComponent = document.querySelector('.js-weekdisplay');
+
+    const signInButton = document.querySelector('.js-sign-in');
+    signInButton.addEventListener('click', () => {
+      if (this._currentState !== STATE.SHOW_SIGN_IN) {
+        return;
+      }
+
+      this.setState(STATE.SIGN_IN);
+    });
+
+    this._userModel = new window.GauntFace.UserModel();
 
     this.onStart();
 
@@ -85,9 +106,91 @@ class CalendarAppController {
     this._paths.push(pathDetails);
   }
 
+  setState(newState) {
+    if (newState === this._currentState) {
+      return;
+    }
+
+    const topLevelSections =
+      document.querySelectorAll('body >  .js-top-level-section');
+
+    switch (newState) {
+      case STATE.SHOW_SIGN_IN: {
+        this._loadingSpinner.classList.add('u-hidden');
+
+        for (let i = 0; i < topLevelSections.length; ++i) {
+          const section = topLevelSections[i];
+          if (section.classList.contains('js-login-section')) {
+            section.classList.remove('u-hidden');
+          } else {
+            section.classList.add('u-hidden');
+          }
+        }
+        break;
+      }
+      case STATE.SIGN_IN: {
+        this._loadingSpinner.classList.remove('u-hidden');
+
+        for (let i = 0; i < topLevelSections.length; ++i) {
+          const section = topLevelSections[i];
+          section.classList.add('u-hidden');
+        }
+
+        this._userModel.signIn()
+        .then(() => {
+          this.setState(STATE.LOAD_CALENDAR);
+        })
+        .catch(err => {
+          // Handle Errors here.
+          let errorCode = err.code;
+          let errorMessage = err.message;
+          // The email of the user's account used.
+          let email = err.email;
+          // The firebase.auth.AuthCredential type that was used.
+          let credential = err.credential;
+
+          console.log(errorCode);
+          console.log(errorMessage);
+          console.log(email);
+          console.log(credential);
+
+          this.setState(STATE.SHOW_SIGN_IN);
+        });
+        break;
+      }
+      case STATE.LOAD_CALENDAR: {
+        this._loadingSpinner.classList.add('u-hidden');
+
+        for (let i = 0; i < topLevelSections.length; ++i) {
+          const section = topLevelSections[i];
+          if (section.classList.contains('js-calendar-section')) {
+            section.classList.remove('u-hidden');
+          } else {
+            section.classList.add('u-hidden');
+          }
+        }
+
+        this._weekInfoComponent.setDate(moment());
+        this._weekDisplayComponent.setDate(moment());
+        break;
+      }
+      default:
+        throw new Error(`Unknown state given: ${newState}`);
+    }
+
+    this._currentState = newState;
+  }
+
   onStart() {
     console.log('CalendarController: onStart');
-    this.initViews();
+
+    if (this._userModel.isSignedIn()) {
+      this.setState(STATE.LOAD_CALENDAR);
+    } else {
+      this.setState(STATE.SHOW_SIGN_IN);
+    }
+    // this.initViews();
+
     /** this.waitForDimensions()
     .then(() => {
       return this.prepareDrawingEvents();
@@ -106,10 +209,7 @@ class CalendarAppController {
   }
 
   initViews() {
-    this._weekInfoComponent = document.querySelector('.js-weekinfo');
-    this._weekInfoComponent.setDate(moment());
-    this._weekDisplayComponent = document.querySelector('.js-weekdisplay');
-    this._weekDisplayComponent.setDate(moment());
+
     // this._rootElement = document.querySelector('.js-calendar-content');
     // this._rootElement.classList.remove('hidden');
 

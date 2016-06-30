@@ -12,26 +12,38 @@
 
   <!-- Required Styles -->
   <link rel="stylesheet" href="styles/index.css">
-
+  <link rel="stylesheet" href="styles/utilities.css">
+  
   <!-- Required Components -->
+  <link rel="import" href="components/gf-spinner/gf-spinner.html" >
   <link rel="import" href="components/gf-weekinfo/gf-weekinfo.html" >
   <link rel="import" href="components/gf-weekdisplay/gf-weekdisplay.html" >
 </head>
 <body>
-  <main class="calendar-content js-calendar-content">
-    <header class="top-header">
-      <gf-weekinfo class="js-weekinfo"></gf-weekinfo>
+  <gf-spinner class="loading-spinner js-loading-spinner"></gf-spinner>
 
-      <ul class="goals"></ul>
-    </header>
+  <section class="login-section js-login-section js-top-level-section u-hidden">
+    <h1>Hello.</h1>
+    <button class="js-sign-in">Sign In</button>
+  </section>
 
-    <gf-weekdisplay class="js-weekdisplay">
-      <canvas class="weekdisplay__paintingarea js-painting-area"></canvas>
-    </gf-weekdisplay>
-  </main>
+  <section class="js-calendar-section js-top-level-section u-hidden">
+    <main class="calendar-content js-calendar-content">
+      <header class="top-header">
+        <gf-weekinfo class="js-weekinfo"></gf-weekinfo>
+
+        <ul class="goals"></ul>
+      </header>
+
+      <gf-weekdisplay class="js-weekdisplay">
+        <canvas class="weekdisplay__paintingarea js-painting-area"></canvas>
+      </gf-weekdisplay>
+    </main>
+  </section>
 
   <script src="https://www.gstatic.com/firebasejs/3.0.2/firebase.js"></script>
   <script src="scripts/third_party/momentjs/moment.js"></script>
+  <script src="scripts/models/user-model.js"></script>
   <script src="scripts/controllers/application-controller.js"></script>
 </body>
 </html>

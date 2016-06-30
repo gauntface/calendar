@@ -3,6 +3,10 @@
   --page-bg-color: white;
   --link-text-color: var(--font-color);
 
+  --button-color: var(--font-color);
+  --active-button-color: #353434;
+  --hover-button-color: #5C5B5B;
+
   --toggle-btn-border-color: #FFE0D8;
   --toggle-btn-fill-color: #FEAB98;
 }
