@@ -161,7 +161,9 @@ class CalendarAppController {
       case STATE.LOAD_CALENDAR: {
         this._loadingSpinner.classList.add('u-hidden');
 
-        for (let i = 0; i < topLevelSections.length; ++i) {
+        // TODO: Load calendar elements
+
+        /** for (let i = 0; i < topLevelSections.length; ++i) {
           const section = topLevelSections[i];
           if (section.classList.contains('js-calendar-section')) {
             section.classList.remove('u-hidden');
@@ -171,7 +173,7 @@ class CalendarAppController {
         }
 
         this._weekInfoComponent.setDate(moment());
-        this._weekDisplayComponent.setDate(moment());
+        this._weekDisplayComponent.setDate(moment());**/
         break;
       }
       default:
@@ -184,11 +186,14 @@ class CalendarAppController {
   onStart() {
     console.log('CalendarController: onStart');
 
-    if (this._userModel.isSignedIn()) {
-      this.setState(STATE.LOAD_CALENDAR);
-    } else {
-      this.setState(STATE.SHOW_SIGN_IN);
-    }
+    return this._userModel.isSignedIn()
+    .then(isSignedIn => {
+      if (isSignedIn) {
+        this.setState(STATE.LOAD_CALENDAR);
+      } else {
+        this.setState(STATE.SHOW_SIGN_IN);
+      }
+    });
     // this.initViews();
 
     /** this.waitForDimensions()

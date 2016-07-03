@@ -5,30 +5,41 @@
 class UserModel {
   constructor() {
     this._userID = null;
+
+    this._ready = firebase.auth().getRedirectResult()
+    .then(result => {
+      if (!result.user) {
+        // Not signed in
+        return;
+      }
+      this._userID = result.user.uid;
+    })
+    .catch(error => {
+      // Handle Errors here.
+      console.log(error.code, error.message);
+    });
   }
 
   isSignedIn() {
-    if (!this._userID) {
-      return false;
-    }
+    return this._ready
+    .then(() => {
+      if (!this._userID) {
+        return false;
+      }
 
-    return true;
+      return true;
+    });
   }
 
   signIn() {
     var provider = new firebase.auth.GoogleAuthProvider();
-    return firebase.auth().signInWithPopup(provider)
-    .then(result => {
-      this._userID = result.user.uid;
-    });
+    return firebase.auth().signInWithRedirect(provider);
   }
 
   signOut() {
-    return firebase.auth().signOut().then(function() {
-      // Sign-out successful.
-    }, function(error) {
-      // An error happened.
-    });
+    this._userID = null;
+
+    return firebase.auth().signOut();
   }
 }
 
