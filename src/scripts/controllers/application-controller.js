@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals moment, firebase */
+/* globals firebase */
 
 const STATE = {
   SHOW_SIGN_IN: 'show-sign-in',
@@ -13,6 +13,11 @@ class CalendarAppController {
       throw new Error('Moment.js is required to run this app');
     }
 
+    if (!window.GauntFace.loadHTMLImport) {
+      throw new Error('window.GauntFace.loadHTMLImport is required to ' +
+        'run this app');
+    }
+
     const firebaseConfig = {
       apiKey: "AIzaSyCv-BqXZG2PF34ho97rwU63hPUcxBC2vKs",
       authDomain: "calendar-8fc2d.firebaseapp.com",
@@ -22,8 +27,6 @@ class CalendarAppController {
     firebase.initializeApp(firebaseConfig);
 
     this._loadingSpinner = document.querySelector('.js-loading-spinner');
-    this._weekInfoComponent = document.querySelector('.js-weekinfo');
-    this._weekDisplayComponent = document.querySelector('.js-weekdisplay');
 
     this._userModel = new window.GauntFace.UserModel();
 
@@ -49,9 +52,6 @@ class CalendarAppController {
 
     this._pendingStateChange = true;
 
-    const topLevelSections =
-      document.querySelectorAll('body >  .js-top-level-section');
-
     let stateChangePromise;
     switch (newState) {
       case STATE.SHOW_SIGN_IN: {
@@ -59,7 +59,7 @@ class CalendarAppController {
 
         stateChangePromise = this.removeCurrentScreen()
         .then(() => {
-          return this.loadHTMLImport(
+          return window.GauntFace.loadHTMLImport(
             '/components/screens/gf-sign-in/gf-sign-in.html');
         })
         .then(() => {
@@ -74,7 +74,7 @@ class CalendarAppController {
 
         stateChangePromise = this.removeCurrentScreen()
         .then(() => {
-          return this.loadHTMLImport(
+          return window.GauntFace.loadHTMLImport(
             '/components/screens/gf-calendar/gf-calendar.html');
         })
         .then(() => {
@@ -82,11 +82,6 @@ class CalendarAppController {
           calendarScreen.userModel = this._userModel;
           return this.setCurrentScreen(calendarScreen);
         });
-
-        /**
-
-        this._weekInfoComponent.setDate(moment());
-        this._weekDisplayComponent.setDate(moment());**/
         break;
       }
       default:
@@ -110,18 +105,6 @@ class CalendarAppController {
 
   removeCurrentScreen() {
     return Promise.resolve();
-  }
-
-  loadHTMLImport(importPath) {
-    return new Promise(resolve => {
-      let link = document.createElement('link');
-      link.setAttribute('rel', 'import');
-      link.setAttribute('href', importPath);
-      link.onload = function() {
-        resolve();
-      };
-      document.body.appendChild(link);
-    });
   }
 
   setCurrentScreen(newScreen) {
