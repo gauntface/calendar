@@ -1,0 +1,15 @@
+<template>
+  <style>
+    @import "/components/screens/gf-calendar/gf-calendar.css";
+  </style>
+
+  <header class="top-header">
+    <gf-weekinfo class="js-weekinfo"></gf-weekinfo>
+  </header>
+
+  <gf-weekdisplay class="js-weekdisplay">
+    <canvas class="weekdisplay__paintingarea js-painting-area"></canvas>
+  </gf-weekdisplay>
+</template>
+
+<script src="gf-calendar.js"></script>

@@ -4,7 +4,6 @@
 
 const STATE = {
   SHOW_SIGN_IN: 'show-sign-in',
-  SIGN_IN: 'sign-in',
   LOAD_CALENDAR: 'load-calendar'
 };
 
@@ -13,12 +12,6 @@ class CalendarAppController {
     if (!('moment' in window)) {
       throw new Error('Moment.js is required to run this app');
     }
-
-    this.waitForDimensions.bind(this);
-    this.onResize.bind(this);
-    this._paths = [];
-    this._currentPath = null;
-    this._debugMode = true;
 
     const firebaseConfig = {
       apiKey: "AIzaSyCv-BqXZG2PF34ho97rwU63hPUcxBC2vKs",
@@ -32,145 +25,65 @@ class CalendarAppController {
     this._weekInfoComponent = document.querySelector('.js-weekinfo');
     this._weekDisplayComponent = document.querySelector('.js-weekdisplay');
 
-    const signInButton = document.querySelector('.js-sign-in');
-    signInButton.addEventListener('click', () => {
-      if (this._currentState !== STATE.SHOW_SIGN_IN) {
-        return;
-      }
-
-      this.setState(STATE.SIGN_IN);
-    });
-
     this._userModel = new window.GauntFace.UserModel();
 
-    this.onStart();
-
-    // this.onFBInit();
-
-    this.loaded = true;
-  }
-
-  /** loadFBSDK() {
-    window.fbAsyncInit = this.onFBInit.bind(this);
-    window.checkLoginState = this.checkLoginState.bind(this);
-
-    let id = 'facebook-jssdk';
-    let fjs = document.getElementsByTagName('script')[0];
-    if (document.getElementById(id)) {
-      return;
-    }
-
-    let js = document.createElement('script');
-    js.id = id;
-    js.src = '//connect.facebook.net/en_US/sdk.js';
-    fjs.parentNode.insertBefore(js, fjs);
-  }
-
-  onFBInit() {
-    // cookie: enable cookies to allow the server to access
-    // the session
-    // xfbml: parse social plugins on this page
-    FB.init({
-      appId: '187245108292106',
-      cookie: true,
-      xfbml: false,
-      version: 'v2.2'
+    return this._userModel.isSignedIn()
+    .then(isSignedIn => {
+      if (isSignedIn) {
+        this.setState(STATE.LOAD_CALENDAR);
+      } else {
+        this.setState(STATE.SHOW_SIGN_IN);
+      }
+    })
+    .then(() => {
+      // This is here for easy testing
+      this.loaded = true;
     });
-
-    this.checkLoginState();
-  }
-
-  // This function is called when someone finishes with the Login
-  // Button.  See the onlogin handler attached to it in the sample
-  // code below.
-  checkLoginState() {
-    FB.getLoginStatus(this.statusChangeCallback);
-  }**/
-
-  // This is called with the results from from FB.getLoginStatus().
-  statusChangeCallback(response) {
-    // The response object is returned with a status field that lets the
-    // app know the current login status of the person.
-    // Full docs on the response object can be found in the documentation
-    // for FB.getLoginStatus().
-    switch (response.status) {
-      case 'connected':
-        this._fb.authWithCustomToken(response.authResponse.accessToken);
-        break;
-      default:
-        break;
-    }
-  }
-
-  addPath(pathDetails) {
-    this._paths.push(pathDetails);
   }
 
   setState(newState) {
-    if (newState === this._currentState) {
+    if (newState === this._currentState ||
+      this._pendingStateChange) {
       return;
     }
+
+    this._pendingStateChange = true;
 
     const topLevelSections =
       document.querySelectorAll('body >  .js-top-level-section');
 
+    let stateChangePromise;
     switch (newState) {
       case STATE.SHOW_SIGN_IN: {
         this._loadingSpinner.classList.add('u-hidden');
 
-        for (let i = 0; i < topLevelSections.length; ++i) {
-          const section = topLevelSections[i];
-          if (section.classList.contains('js-login-section')) {
-            section.classList.remove('u-hidden');
-          } else {
-            section.classList.add('u-hidden');
-          }
-        }
-        break;
-      }
-      case STATE.SIGN_IN: {
-        this._loadingSpinner.classList.remove('u-hidden');
-
-        for (let i = 0; i < topLevelSections.length; ++i) {
-          const section = topLevelSections[i];
-          section.classList.add('u-hidden');
-        }
-
-        this._userModel.signIn()
+        stateChangePromise = this.removeCurrentScreen()
         .then(() => {
-          this.setState(STATE.LOAD_CALENDAR);
+          return this.loadHTMLImport(
+            '/components/screens/gf-sign-in/gf-sign-in.html');
         })
-        .catch(err => {
-          // Handle Errors here.
-          let errorCode = err.code;
-          let errorMessage = err.message;
-          // The email of the user's account used.
-          let email = err.email;
-          // The firebase.auth.AuthCredential type that was used.
-          let credential = err.credential;
-
-          console.log(errorCode);
-          console.log(errorMessage);
-          console.log(email);
-          console.log(credential);
-
-          this.setState(STATE.SHOW_SIGN_IN);
+        .then(() => {
+          const signInScreen = document.createElement('gf-sign-in');
+          signInScreen.userModel = this._userModel;
+          return this.setCurrentScreen(signInScreen);
         });
         break;
       }
       case STATE.LOAD_CALENDAR: {
         this._loadingSpinner.classList.add('u-hidden');
 
-        // TODO: Load calendar elements
+        stateChangePromise = this.removeCurrentScreen()
+        .then(() => {
+          return this.loadHTMLImport(
+            '/components/screens/gf-calendar/gf-calendar.html');
+        })
+        .then(() => {
+          const calendarScreen = document.createElement('gf-calendar');
+          calendarScreen.userModel = this._userModel;
+          return this.setCurrentScreen(calendarScreen);
+        });
 
-        /** for (let i = 0; i < topLevelSections.length; ++i) {
-          const section = topLevelSections[i];
-          if (section.classList.contains('js-calendar-section')) {
-            section.classList.remove('u-hidden');
-          } else {
-            section.classList.add('u-hidden');
-          }
-        }
+        /**
 
         this._weekInfoComponent.setDate(moment());
         this._weekDisplayComponent.setDate(moment());**/
@@ -180,243 +93,44 @@ class CalendarAppController {
         throw new Error(`Unknown state given: ${newState}`);
     }
 
-    this._currentState = newState;
-  }
-
-  onStart() {
-    console.log('CalendarController: onStart');
-
-    return this._userModel.isSignedIn()
-    .then(isSignedIn => {
-      if (isSignedIn) {
-        this.setState(STATE.LOAD_CALENDAR);
-      } else {
-        this.setState(STATE.SHOW_SIGN_IN);
-      }
+    stateChangePromise.then(() => {
+      this._currentState = newState;
+      this._pendingStateChange = false;
     });
-    // this.initViews();
-
-    /** this.waitForDimensions()
-    .then(() => {
-      return this.prepareDrawingEvents();
-    })
-    .catch(err => {
-      console.error(err);
-    });**/
-  }
-
-  onUpdate() {
-    console.log('CalendarController: onUpdate');
-  }
-
-  onFinish() {
-    console.log('CalendarController: onFinish');
   }
 
   initViews() {
-
     // this._rootElement = document.querySelector('.js-calendar-content');
     // this._rootElement.classList.remove('hidden');
 
-    //this._drawingArea = document.querySelector('.js-drawing-display');
-    //this._canvasArea = document.querySelector('.js-painting-area');
-    //this._canvasContext = this._canvasArea.getContext('2d');
+    // this._drawingArea = document.querySelector('.js-drawing-display');
+    // this._canvasArea = document.querySelector('.js-painting-area');
+    // this._canvasContext = this._canvasArea.getContext('2d');
   }
 
-  waitForDimensions() {
+  removeCurrentScreen() {
+    return Promise.resolve();
+  }
+
+  loadHTMLImport(importPath) {
     return new Promise(resolve => {
-      let width = this._canvasArea.parentElement.offsetWidth;
-      let height = this._canvasArea.parentElement.offsetHeight;
-
-      if (width === 0 || height === 0) {
-        requestAnimationFrame(this.waitForDimensions);
-        return;
-      }
-
-      this._canvasArea.classList.add('is-sized');
-
-      window.addEventListener('resize', this.onResize.bind(this));
-      this.onResize();
-      resolve();
+      let link = document.createElement('link');
+      link.setAttribute('rel', 'import');
+      link.setAttribute('href', importPath);
+      link.onload = function() {
+        resolve();
+      };
+      document.body.appendChild(link);
     });
   }
 
-  onResize() {
-    console.log('onResize');
-    let dPR = window.devicePixelRatio || 1;
+  setCurrentScreen(newScreen) {
+    const mainElement = document.querySelector('main');
+    mainElement.appendChild(newScreen);
 
-    // Switch off the canvas.
-    // TODO: Why?
-    this._canvasArea.style.display = 'none';
-
-    // Find out how large the parent element is.
-    let width = this._canvasArea.parentElement.offsetWidth;
-    let height = this._canvasArea.parentElement.offsetHeight;
-
-    // Switch it back on.
-    this._canvasArea.style.display = 'block';
-
-    // Scale the backing store by the dPR.
-    this._canvasArea.width = width * dPR;
-    this._canvasArea.height = height * dPR;
-
-    // Draw Previous Drawings
-    this._paths.each(pathPoints => {
-      console.log('start pen draw');
-      console.log(pathPoints[0]);
-      this.startPenDraw(pathPoints[0]);
-      for (var i = 1; i < pathPoints.length - 1; i++) {
-        console.log('draw ' + i);
-        this.penMove(pathPoints[i - 1], pathPoints[i]);
-      }
-      console.log('end pen draw');
-      this.endPenDraw(pathPoints[pathPoints.length - 1]);
-    });
-  }
-
-  prepareDrawingEvents() {
-    if (!window.PointerEvent) {
-      // Pointer events are supported.
-      throw new Error('Pointer events are required.');
-    }
-
-    let pointerStartHandler = event => {
-      if (event.pointerType !== 'pen' || event.pressure === 0) {
-        return;
-      }
-
-      event.preventDefault();
-
-      let point = this.getPointFromEvent(event);
-      this._currentPath = new DrawnPath();
-      this._currentPath.addToPath(point);
-
-      this.drawPathStart(point);
-    };
-
-    let pointerEndHandler = event => {
-      if (event.pointerType !== 'pen') {
-        return;
-      }
-
-      event.preventDefault();
-
-      if (this._currentPath === null) {
-        return;
-      }
-
-      let point = this.getPointFromEvent(event);
-      this.drawPathEnd(point);
-      this.drawPathBoundingBox(this._currentPath);
-
-      this._currentPath.addToPath(point);
-      this.addPath(this._currentPath);
-      this._currentPath = null;
-    };
-
-    let pointerMoveHandler = event => {
-      if (event.pointerType !== 'pen' || event.pressure === 0) {
-        return;
-      }
-
-      event.preventDefault();
-
-      const prevPoint = this._currentPath.getLastPoint();
-      if (!prevPoint) {
-        return;
-      }
-
-      let point = this.getPointFromEvent(event);
-      this._currentPath.addToPath(point);
-
-      this.drawBetweenPoints(prevPoint, point);
-    };
-
-    this._drawingArea.addEventListener('pointerdown', pointerStartHandler);
-
-    this._drawingArea.addEventListener('pointermove', pointerMoveHandler);
-
-    this._drawingArea.addEventListener('pointerup', pointerEndHandler);
-
-    this._drawingArea.addEventListener('pointerenter', pointerStartHandler);
-
-    this._drawingArea.addEventListener('pointerleave', pointerEndHandler);
-  }
-
-  getPointFromEvent(event) {
-    let dPR = window.devicePixelRatio || 1;
-
-    return new Point(
-      event.offsetX * dPR,
-      event.offsetY * dPR,
-      {
-        pressure: event.pressure
-      }
-    );
-  }
-
-  drawPathStart(point) {
-    if (!this._debugMode) {
-      return;
-    }
-
-    this._canvasContext.beginPath();
-    this._canvasContext.arc(
-      point.x,
-      point.y,
-      5,
-      0,
-      2 * Math.PI,
-      false
-    );
-    this._canvasContext.fillStyle = 'rgba(46,204,113,0.6)';
-    this._canvasContext.fill();
-  }
-
-  drawBetweenPoints(fromPoint, toPoint) {
-    this._canvasContext.beginPath();
-    this._canvasContext.moveTo(fromPoint.x, fromPoint.y);
-    this._canvasContext.lineTo(toPoint.x, toPoint.y);
-    this._canvasContext.lineWidth = 1;
-    this._canvasContext.strokeStyle = `rgba(0, 0, 0, ${toPoint.data.pressure})`;
-    this._canvasContext.stroke();
-  }
-
-  drawPathEnd(point) {
-    if (!this._debugMode) {
-      return;
-    }
-
-    this._canvasContext.beginPath();
-    this._canvasContext.arc(
-      point.x,
-      point.y,
-      5,
-      0,
-      2 * Math.PI,
-      false
-    );
-    this._canvasContext.fillStyle = 'rgba(231,76,60,0.6)';
-    this._canvasContext.fill();
-  }
-
-  drawPathBoundingBox(path) {
-    if (!this._debugMode) {
-      return;
-    }
-
-    const boundingBox = path.getBoundingBox();
-
-    this._canvasContext.strokeStyle = `rgba(0, 0, 0, 0.5)`;
-    this._canvasContext.strokeRect(
-      boundingBox.x,
-      boundingBox.y,
-      boundingBox.w,
-      boundingBox.h);
-    this._canvasContext.stroke();
+    return Promise.resolve();
   }
 }
-
 
 window.GauntFace = window.GauntFace || {};
 window.GauntFace.CalendarApp = window.GauntFace.CalendarApp ||

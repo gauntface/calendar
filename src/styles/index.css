@@ -21,6 +21,10 @@ html {
 body {
   min-height: 100%;
 
+  display: flex;
+  flex-direction: column;
+  min-width: 240px;
+
   box-sizing: border-box;
 
   background-color: var(--page-bg-color);
@@ -120,52 +124,15 @@ button:active {
 main {
   width: 100%;
   min-height: 100%;
-}
-
-.hidden {
-  display: none !important;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 a {
   color: var(--link-text-color);
-}
-
-body {
-  display: flex;
-  flex-direction: column;
-  min-width: 240px;
-}
-
-.calendar-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.top-header {
-  display: flex;
-
-  padding-top: var(--base-line);
-  margin: 0 var(--base-line) var(--base-line) var(--base-line);
-
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.goals {
-  display: flex;
-
-  flex-direction: column;
-  justify-content: flex-start;
-
-  font-family: var(--title-font-family);
-  list-style: none;
-  padding: 0;
-  margin: 0 0 var(--base-line) 0;
-}
-
-.goals li {
-  margin-bottom: calc(var(--base-line) / 3);
 }
 
 .weekdisplay__paintingarea {
@@ -177,23 +144,13 @@ body {
     height: 100%;
 }
 
-.loading-spinner {
+/**.loading-spinner {
   position: fixed;
   top: 50%;
   left: 50%;
   margin-left: -24px;
   margin-top: -24px;
-}
-
-.login-section {
-  width: 100%;
-  flex: 1;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+}**/
 
 @media (min-width: 300px) {
   h1, h2, h3, h4, h5, h6, p, ul, ol {
