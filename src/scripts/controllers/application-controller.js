@@ -30,7 +30,7 @@ class CalendarAppController {
 
     this._userModel = new window.GauntFace.UserModel();
 
-    return this._userModel.isSignedIn()
+    this._userModel.isSignedIn()
     .then(isSignedIn => {
       if (isSignedIn) {
         this.setState(STATE.LOAD_CALENDAR);
@@ -92,15 +92,6 @@ class CalendarAppController {
       this._currentState = newState;
       this._pendingStateChange = false;
     });
-  }
-
-  initViews() {
-    // this._rootElement = document.querySelector('.js-calendar-content');
-    // this._rootElement.classList.remove('hidden');
-
-    // this._drawingArea = document.querySelector('.js-drawing-display');
-    // this._canvasArea = document.querySelector('.js-painting-area');
-    // this._canvasContext = this._canvasArea.getContext('2d');
   }
 
   removeCurrentScreen() {

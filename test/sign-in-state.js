@@ -36,7 +36,7 @@ function performTests(browser) {
       });
     });
 
-    it('should show the current year by default', function() {
+    it('should not be signed in by default', function() {
       this.timeout(10000);
       return new Promise((resolve, reject) => {
         globalDriver.get(testUrl + '/index.html')
@@ -53,8 +53,9 @@ function performTests(browser) {
           });
         })
         .then(() => {
-          return globalDriver.executeScript(function() {
-            return window.GauntFace.CalendarApp._userModel.isSignedIn();
+          return globalDriver.executeAsyncScript(function(cb) {
+            window.GauntFace.CalendarApp._userModel.isSignedIn()
+            .then(cb);
           });
         })
         .then(isSignedIn => {
@@ -65,7 +66,7 @@ function performTests(browser) {
       });
     });
 
-    it('should only display the sign in elements', function() {
+    it('should only display the sign in screen', function() {
       this.timeout(10000);
       return new Promise((resolve, reject) => {
         globalDriver.get(testUrl + '/index.html')
@@ -84,11 +85,19 @@ function performTests(browser) {
         .then(() => {
           return globalDriver.executeScript(function() {
             return document.querySelectorAll(
-              'body > *:not(script):not(iframe)').length;
+              'body > main').length;
           });
         })
         .then(numberOfElements => {
-          numberOfElements.should.equal(2);
+          numberOfElements.should.equal(1);
+        })
+        .then(() => {
+          return globalDriver.executeScript(function() {
+            return document.querySelector('body > main > *').nodeName;
+          });
+        })
+        .then(elementName => {
+          (elementName.toLowerCase()).should.equal('gf-sign-in');
         })
         .then(() => resolve())
         .thenCatch(reject);
