@@ -42,8 +42,6 @@
       const prevWeek = newDate.clone().subtract(7, 'days');
       const nextWeek = newDate.clone().add(7, 'days');
 
-      console.log(`/${prevWeek.year()}/${prevWeek.isoWeek()}`);
-
       this._prevWeekElement.href = `/${prevWeek.year()}/${prevWeek.isoWeek()}`;
       this._nextWeekElement.href = `/${nextWeek.year()}/${nextWeek.isoWeek()}`;
     }
