@@ -18,6 +18,9 @@ class CalendarAppController {
         'run this app');
     }
 
+    this._loadingSpinner = document.querySelector('.js-loading-spinner');
+    this._userModel = new window.GauntFace.UserModel();
+
     const firebaseConfig = {
       apiKey: "AIzaSyCv-BqXZG2PF34ho97rwU63hPUcxBC2vKs",
       authDomain: "calendar-8fc2d.firebaseapp.com",
@@ -25,11 +28,9 @@ class CalendarAppController {
       storageBucket: "calendar-8fc2d.appspot.com"
     };
     firebase.initializeApp(firebaseConfig);
+  }
 
-    this._loadingSpinner = document.querySelector('.js-loading-spinner');
-
-    this._userModel = new window.GauntFace.UserModel();
-
+  initialise() {
     this._userModel.isSignedIn()
     .then(isSignedIn => {
       if (isSignedIn) {
@@ -106,6 +107,21 @@ class CalendarAppController {
   }
 }
 
+// Handle get variables
+const getEntries = window.location.search.replace('?', '').split('&');
+const getVars = {};
+getEntries.forEach(entry => {
+  const keyValuePair = entry.split('=');
+  if (keyValuePair.length !== 2) {
+    return;
+  }
+  getVars[keyValuePair[0]] = keyValuePair[1];
+});
+
 window.GauntFace = window.GauntFace || {};
 window.GauntFace.CalendarApp = window.GauntFace.CalendarApp ||
   new CalendarAppController();
+
+if (!getVars.testrunner) {
+  window.GauntFace.CalendarApp.initialise();
+}

@@ -9,7 +9,7 @@ const TestServer = require('sw-testing-helpers').TestServer;
 require('chai').should();
 
 function performTests(browser) {
-  describe('Top Left Week Info Display', function() {
+  describe('Sign In Display', function() {
     let globalDriver;
     let testServer;
     let testUrl;
@@ -30,10 +30,13 @@ function performTests(browser) {
 
     after(function() {
       this.timeout(5000);
-      return seleniumAssistant.killWebDriver(globalDriver);
+      return seleniumAssistant.killWebDriver(globalDriver)
+      .then(() => {
+        testServer.killServer();
+      });
     });
 
-    it('should show the current year by default', function() {
+    it('should not be signed in by default', function() {
       this.timeout(10000);
       return new Promise((resolve, reject) => {
         globalDriver.get(testUrl + '/index.html')
@@ -50,20 +53,20 @@ function performTests(browser) {
           });
         })
         .then(() => {
-          return globalDriver.executeScript(function() {
-            return document.querySelector('gf-weekinfo')
-              .shadowRoot.querySelector('.js-weekinfo-year').textContent;
+          return globalDriver.executeAsyncScript(function(cb) {
+            window.GauntFace.CalendarApp._userModel.isSignedIn()
+            .then(cb);
           });
         })
-        .then(displayedYear => {
-          displayedYear.should.equal(moment().year().toString());
+        .then(isSignedIn => {
+          isSignedIn.should.equal(false);
         })
         .then(() => resolve())
         .thenCatch(reject);
       });
     });
 
-    it('should show the current month by default', function() {
+    it('should only display the sign in screen', function() {
       this.timeout(10000);
       return new Promise((resolve, reject) => {
         globalDriver.get(testUrl + '/index.html')
@@ -81,42 +84,20 @@ function performTests(browser) {
         })
         .then(() => {
           return globalDriver.executeScript(function() {
-            return document.querySelector('gf-weekinfo')
-              .shadowRoot.querySelector('.js-weekinfo-month').textContent;
+            return document.querySelectorAll(
+              'body > main').length;
           });
         })
-        .then(displayedMonth => {
-          displayedMonth.should.equal(moment().format('MMMM'));
-        })
-        .then(() => resolve())
-        .thenCatch(reject);
-      });
-    });
-
-    it('should show the current week by default', function() {
-      this.timeout(10000);
-      return new Promise((resolve, reject) => {
-        globalDriver.get(testUrl + '/index.html')
-        .then(() => {
-          return globalDriver.wait(function() {
-            return globalDriver.executeScript(function() {
-              if (!window.GauntFace ||
-                !window.GauntFace.CalendarApp) {
-                return false;
-              }
-
-              return window.GauntFace.CalendarApp.loaded;
-            });
-          });
+        .then(numberOfElements => {
+          numberOfElements.should.equal(1);
         })
         .then(() => {
           return globalDriver.executeScript(function() {
-            return document.querySelector('gf-weekinfo')
-              .shadowRoot.querySelector('.js-weekinfo-weekNumber').textContent;
+            return document.querySelector('body > main > *').nodeName;
           });
         })
-        .then(displayedYear => {
-          displayedYear.should.equal(moment().isoWeek().toString());
+        .then(elementName => {
+          (elementName.toLowerCase()).should.equal('gf-sign-in');
         })
         .then(() => resolve())
         .thenCatch(reject);

@@ -5,23 +5,22 @@
 class UserModel {
   constructor() {
     this._userID = null;
-
-    this._ready = firebase.auth().getRedirectResult()
-    .then(result => {
-      if (!result.user) {
-        // Not signed in
-        return;
-      }
-      this._userID = result.user.uid;
-    })
-    .catch(error => {
-      // Handle Errors here.
-      console.log(error.code, error.message);
-    });
   }
 
   isSignedIn() {
-    return this._ready
+    if (!this._redirectCheck) {
+      this._redirectCheck = firebase.auth().getRedirectResult()
+      .then(result => {
+        if (!result.user) {
+          // Not signed in
+          return;
+        }
+
+        this._userID = result.user.uid;
+      });
+    }
+
+    return this._redirectCheck
     .then(() => {
       if (!this._userID) {
         return false;
