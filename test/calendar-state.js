@@ -40,7 +40,7 @@ function performTests(browser) {
       });
     });
 
-    it('should show calendar when signed in', function() {
+    it('should show calendar when signed in and have good defeault state', function() {
       this.timeout(10000);
       return new Promise((resolve, reject) => {
         globalDriver.get(testUrl + '/index.html?testrunner=true')
@@ -98,6 +98,45 @@ function performTests(browser) {
         })
         .then(isSignedIn => {
           isSignedIn.should.equal(true);
+        })
+        .then(() => {
+          return globalDriver.executeScript(function() {
+            const weekInfo = document.querySelector('gf-calendar').shadowRoot.querySelector('gf-weekinfo');
+            const weekDisplay = document.querySelector('gf-calendar').shadowRoot.querySelector('gf-weekdisplay');
+            const dayElements = weekDisplay.shadowRoot.querySelectorAll('.weekday');
+            const dayData = [];
+            for (var i = 0; i < dayElements.length; i++) {
+              dayData.push({
+                dayName: dayElements[i].querySelector('.weekday_title').textContent,
+                dayDate: dayElements[i].querySelector('.weekday_subtitle').textContent
+              });
+            }
+            return {
+              weekInfo: {
+                year: weekInfo.shadowRoot.querySelector('.js-weekinfo-year').textContent,
+                month: weekInfo.shadowRoot.querySelector('.js-weekinfo-month').textContent
+              },
+              weekDisplay: dayData
+            };
+          });
+        })
+        .then(details => {
+          const momentInstance = moment();
+          details.weekInfo.year.should.equal(momentInstance.year().toString());
+          details.weekInfo.month.should.equal(momentInstance.format('MMMM'));
+
+          const daysOfWeek = [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Weekend'
+          ];
+
+          details.weekDisplay.forEach((dayData, index) => {
+            dayData.dayName.should.equal(daysOfWeek[index]);
+          });
         })
         .then(() => resolve())
         .thenCatch(reject);

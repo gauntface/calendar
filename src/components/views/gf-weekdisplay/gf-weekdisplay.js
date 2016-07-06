@@ -36,7 +36,7 @@
       weekDayHeaderElement.appendChild(weekdayTitleElement);
 
       const weekdaySubtitleElement = document.createElement('h3');
-      weekdaySubtitleElement.classList.add('weekday__subtitle');
+      weekdaySubtitleElement.classList.add('weekday_subtitle');
       weekdaySubtitleElement.textContent = subtitleString;
       weekDayHeaderElement.appendChild(weekdaySubtitleElement);
 
@@ -54,7 +54,7 @@
        * <div class="weekday">
        *  <header>
        *      <h1 class="weekday__title">Tuesday</h1>
-       *      <h3 class="weekday__subtitle">02</h3>
+       *      <h3 class="weekday_subtitle">02</h3>
        *   </header>
        * </div>
        *

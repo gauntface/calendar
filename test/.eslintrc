@@ -4,6 +4,7 @@
   },
   "rules": {
     "require-jsdoc": 0,
-    "max-nested-callbacks": 0
+    "max-nested-callbacks": 0,
+    "max-len": 0
   }
 }

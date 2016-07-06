@@ -14,7 +14,7 @@
   margin-bottom: 0;
 }
 
-.weekday__title, .weekday__subtitle {
+.weekday__title, .weekday_subtitle {
   font-size: var(--font-size-h4);
   line-height: calc((var(--font-size-h4) / var(--base-line)) * (var(--base-line) / var(--font-size-h4)));
 }
