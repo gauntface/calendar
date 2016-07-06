@@ -9,7 +9,7 @@ const TestServer = require('sw-testing-helpers').TestServer;
 require('chai').should();
 
 function performTests(browser) {
-  describe('Sign In Display', function() {
+  describe('Calendar Display', function() {
     let globalDriver;
     let testServer;
     let testUrl;
@@ -17,9 +17,13 @@ function performTests(browser) {
     before(function() {
       return browser.getSeleniumDriver()
       .then(driver => {
+        driver.manage().timeouts().setScriptTimeout(5000);
+
         globalDriver = driver;
         testServer = new TestServer(false);
         const expressApp = testServer.getExpressApp();
+        expressApp.use('/third_party/', express.static(path.join(__dirname,
+          '..', 'test', 'third_party')));
         expressApp.use('/', express.static(path.join(__dirname, '..', 'src')));
         return testServer.startServer(null, 8888);
       })
@@ -36,10 +40,10 @@ function performTests(browser) {
       });
     });
 
-    it('should not be signed in by default', function() {
+    it('should show calendar when signed in', function() {
       this.timeout(10000);
       return new Promise((resolve, reject) => {
-        globalDriver.get(testUrl + '/index.html')
+        globalDriver.get(testUrl + '/index.html?testrunner=true')
         .then(() => {
           return globalDriver.wait(function() {
             return globalDriver.executeScript(function() {
@@ -48,6 +52,40 @@ function performTests(browser) {
                 return false;
               }
 
+              return true;
+            });
+          });
+        })
+        .then(() => {
+          // Inject Sinon
+          return globalDriver.executeAsyncScript(function(cb) {
+            var scriptElement = document.createElement('script');
+            scriptElement.setAttribute('src',
+              '/third_party/sinon/sinon-1.17.3.js');
+            scriptElement.onload = function() {
+              cb();
+            };
+            document.body.appendChild(scriptElement);
+          });
+        })
+        .then(() => {
+          // Stub methods with Sinon
+          return globalDriver.executeScript(function(cb) {
+            window.sinon.stub(window.GauntFace.UserModel.prototype,
+              'isSignedIn',
+              function() {
+                return Promise.resolve(true);
+              });
+          });
+        })
+        .then(() => {
+          return globalDriver.executeScript(function() {
+            window.GauntFace.CalendarApp.initialise();
+          });
+        })
+        .then(() => {
+          return globalDriver.wait(function() {
+            return globalDriver.executeScript(function() {
               return window.GauntFace.CalendarApp.loaded;
             });
           });
@@ -59,45 +97,7 @@ function performTests(browser) {
           });
         })
         .then(isSignedIn => {
-          isSignedIn.should.equal(false);
-        })
-        .then(() => resolve())
-        .thenCatch(reject);
-      });
-    });
-
-    it('should only display the sign in screen', function() {
-      this.timeout(10000);
-      return new Promise((resolve, reject) => {
-        globalDriver.get(testUrl + '/index.html')
-        .then(() => {
-          return globalDriver.wait(function() {
-            return globalDriver.executeScript(function() {
-              if (!window.GauntFace ||
-                !window.GauntFace.CalendarApp) {
-                return false;
-              }
-
-              return window.GauntFace.CalendarApp.loaded;
-            });
-          });
-        })
-        .then(() => {
-          return globalDriver.executeScript(function() {
-            return document.querySelectorAll(
-              'body > main').length;
-          });
-        })
-        .then(numberOfElements => {
-          numberOfElements.should.equal(1);
-        })
-        .then(() => {
-          return globalDriver.executeScript(function() {
-            return document.querySelector('body > main > *').nodeName;
-          });
-        })
-        .then(elementName => {
-          (elementName.toLowerCase()).should.equal('gf-sign-in');
+          isSignedIn.should.equal(true);
         })
         .then(() => resolve())
         .thenCatch(reject);

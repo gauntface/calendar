@@ -19,6 +19,9 @@ class CalendarAppController {
     }
 
     this._loadingSpinner = document.querySelector('.js-loading-spinner');
+  }
+
+  initialise() {
     this._userModel = new window.GauntFace.UserModel();
 
     const firebaseConfig = {
@@ -28,9 +31,7 @@ class CalendarAppController {
       storageBucket: "calendar-8fc2d.appspot.com"
     };
     firebase.initializeApp(firebaseConfig);
-  }
 
-  initialise() {
     this._userModel.isSignedIn()
     .then(isSignedIn => {
       if (isSignedIn) {
