@@ -22,9 +22,27 @@
           '.js-weekinfo');
         this._weekDisplayComponent = this.shadowRoot.querySelector(
           '.js-weekdisplay');
+        this._quarterlyListComponent = this.shadowRoot.querySelector(
+          '.js-edit-list-quarterly');
 
         this._weekInfoComponent.setDate(moment());
         this._weekDisplayComponent.setDate(moment());
+        this._quarterlyListComponent.addEventListener('list-change', event => {
+          const list = event.detail;
+          const filteredList = list.filter(listItem => {
+            return listItem.length > 0;
+          });
+          // Update firebase
+
+          if (filteredList.length >= 5) {
+            return;
+          }
+
+          if (filteredList[filteredList.length - 1].length > 0) {
+            this._quarterlyListComponent.setNumberOfEntries(
+              filteredList.length + 1);
+          }
+        });
       });
     }
 
@@ -35,7 +53,9 @@
         window.GauntFace.loadHTMLImport('/components/views/gf-weekdisplay/' +
           'gf-weekdisplay.html'),
         window.GauntFace.loadHTMLImport('/components/views/gf-drawing-canvas/' +
-          'gf-drawing-canvas.html')
+          'gf-drawing-canvas.html'),
+        window.GauntFace.loadHTMLImport('/components/views/gf-edit-list/' +
+          'gf-edit-list.html')
       ])
       .then(() => {
         if ('attachShow' in this) {

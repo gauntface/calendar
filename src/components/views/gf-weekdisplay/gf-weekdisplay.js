@@ -49,17 +49,6 @@
           'i.e. setDate(moment())');
       }
 
-      /**
-       *
-       * <div class="weekday">
-       *  <header>
-       *      <h1 class="weekday__title">Tuesday</h1>
-       *      <h3 class="weekday_subtitle">02</h3>
-       *   </header>
-       * </div>
-       *
-       **/
-
       const momentWeekStartInstace = newDate
         .subtract((newDate.isoWeekday() - 1), 'days');
 
