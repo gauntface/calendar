@@ -7,6 +7,10 @@ class UserModel {
     this._userID = null;
   }
 
+  get userID() {
+    return this._userID;
+  }
+
   isSignedIn() {
     if (!this._redirectCheck) {
       this._redirectCheck = firebase.auth().getRedirectResult()

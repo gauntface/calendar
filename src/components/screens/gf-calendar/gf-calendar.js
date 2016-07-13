@@ -25,6 +25,12 @@
         this._quarterlyListComponent = this.shadowRoot.querySelector(
           '.js-edit-list-quarterly');
 
+        window.firebase.database().ref(`users/${this.userModel.userID}/` +
+          `2016/quarter-list/`).once('value', snapshot => {
+            this._quarterlyListComponent.setData(snapshot.val());
+          }
+        );
+
         this._weekInfoComponent.setDate(moment());
         this._weekDisplayComponent.setDate(moment());
         this._quarterlyListComponent.addEventListener('list-change', event => {
@@ -32,9 +38,18 @@
           const filteredList = list.filter(listItem => {
             return listItem.length > 0;
           });
-          // Update firebase
 
-          if (filteredList.length >= 5) {
+          // Update firebase
+          if (window.firebase) {
+            const quarterRef = window.firebase.database().ref(`users/` +
+              `${this.userModel.userID}/2016/quarter-list/`);
+            quarterRef.set(filteredList);
+          } else {
+            console.warn('No firebase object set - unable to save ' +
+              'quarterly goals.');
+          }
+
+          if (filteredList.length >= 5 || !filteredList) {
             return;
           }
 
