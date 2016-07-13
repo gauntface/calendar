@@ -29,19 +29,26 @@
       if (typeof newData !== 'object') {
         throw new Error('setData() expects an instance of an array');
       }
-      
+
       const listItems = this._listElement.querySelectorAll('li');
       for (let i = 0; i < listItems.length; i++) {
         this._listElement.removeChild(listItems[i]);
       }
 
-      newData.forEach(data => {
-        const newListElement = document.createElement('li');
-        newListElement.addEventListener('input', this.onInput.bind(this));
-        newListElement.contentEditable = true;
-        newListElement.textContent = data;
-        this._listElement.appendChild(newListElement);
-      });
+      let newLength = 1;
+      if (newData && newData.length > 0) {
+        newData.forEach(data => {
+          const newListElement = document.createElement('li');
+          newListElement.addEventListener('input', this.onInput.bind(this));
+          newListElement.contentEditable = true;
+          newListElement.textContent = data;
+          this._listElement.appendChild(newListElement);
+        });
+
+        newLength = newData.length + 1;
+      }
+
+      this.setNumberOfEntries(newLength);
     }
 
     setNumberOfEntries(newNumber) {
