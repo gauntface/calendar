@@ -3,7 +3,8 @@
 /* globals moment */
 
 (() => {
-  const componentDoc = document.currentScript.ownerDocument;
+  const currentScript = document._currentScript || document.currentScript;
+  const componentDoc = currentScript.ownerDocument;
 
   class GFCalendar extends HTMLElement {
     constructor() {

@@ -1,7 +1,8 @@
 'use strict';
 
 (() => {
-  const componentDoc = document.currentScript.ownerDocument;
+  const currentScript = document._currentScript || document.currentScript;
+  const componentDoc = currentScript.ownerDocument;
 
   class GFSignIn extends HTMLElement {
     attachedCallback() {
