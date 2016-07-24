@@ -46,20 +46,7 @@
               'quarterly goals.');
           }
 
-          if (filteredList.length >= 5) {
-            return;
-          }
-
-          if (filteredList.length === 0 ||
-            !filteredList) {
-            this._quarterlyListComponent.setNumberOfEntries(1);
-            return;
-          }
-
-          if (filteredList[filteredList.length - 1].length > 0) {
-            this._quarterlyListComponent.setNumberOfEntries(
-              filteredList.length + 1);
-          }
+          this._quarterlyListComponent.updateList();
         });
       });
     }

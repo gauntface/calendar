@@ -12,8 +12,13 @@ class BaseScreenController extends HTMLElement {
     const scriptElements = this.shadowRoot.querySelectorAll('script');
     const styleElements = this.shadowRoot.querySelectorAll('style');
 
-    console.log('Scripts: ', scriptElements);
-    console.log('Scripts: ', styleElements);
+    if (scriptElements.length > 0) {
+      console.log('Scripts: ', scriptElements);
+    }
+
+    if (styleElements.length > 0) {
+      console.log('Styles: ', styleElements);
+    }
 
     this._readyResolve();
   }

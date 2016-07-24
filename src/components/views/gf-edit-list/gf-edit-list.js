@@ -4,6 +4,9 @@
   const currentScript = document._currentScript || document.currentScript;
   const componentDoc = currentScript.ownerDocument;
 
+  const MIN_LENGTH = 1;
+  const MAX_LENGTH = 5;
+
   class GFEditList extends HTMLElement {
     attachedCallback() {
       this._listElement = this.shadowRoot.querySelector('.js-list-element');
@@ -26,42 +29,43 @@
       }
     }
 
+    _clearListElements() {
+      const listItems = this._listElement.querySelectorAll('li');
+      for (let i = 0; i < listItems.length; i++) {
+        this._listElement.removeChild(listItems[i]);
+      }
+    }
+
     setData(newData) {
       if (typeof newData !== 'object') {
         throw new Error('setData() expects an instance of an array');
       }
 
-      const listItems = this._listElement.querySelectorAll('li');
-      for (let i = 0; i < listItems.length; i++) {
-        this._listElement.removeChild(listItems[i]);
-      }
+      this._clearListElements();
 
-      let newLength = 1;
-      if (newData && newData.length > 0) {
-        newData.forEach(data => {
-          const newListElement = document.createElement('li');
-          newListElement.addEventListener('input', this.onInput.bind(this));
-          newListElement.contentEditable = true;
-          newListElement.textContent = data;
-          this._listElement.appendChild(newListElement);
-        });
+      newData.forEach(data => {
+        const newListElement = document.createElement('li');
+        newListElement.addEventListener('input', this.onInput.bind(this));
+        newListElement.contentEditable = true;
+        newListElement.textContent = data;
+        this._listElement.appendChild(newListElement);
+      });
 
-        newLength = newData.length + 1;
-      }
-
-      this.setNumberOfEntries(newLength);
+      this.updateList();
     }
 
-    setNumberOfEntries(newNumber) {
+    updateList() {
       const listItems = this._listElement.querySelectorAll('li');
-      for (let i = 0; i < listItems.length; i++) {
-        const text = listItems[i].textContent;
-        if (text.length === 0) {
+      for (let i = listItems.length - 2; i >= 0; i--) {
+        if (listItems[i].textContent.length === 0) {
           this._listElement.removeChild(listItems[i]);
         }
       }
 
-      while (this._listElement.querySelectorAll('li').length < newNumber) {
+      const numberOfElements = Math.min(MAX_LENGTH, listItems.length + 1);
+      const itemsToAdd = numberOfElements - listItems.length;
+
+      for (let i = 0; i < itemsToAdd; i++) {
         const newListElement = document.createElement('li');
         newListElement.addEventListener('input', this.onInput.bind(this));
         newListElement.contentEditable = true;
@@ -70,6 +74,8 @@
     }
 
     onInput(originalEvent) {
+      console.log('onInput: ', originalEvent);
+
       const listOfText = [];
       const listItems = this._listElement.querySelectorAll('li');
       for (let i = 0; i < listItems.length; i++) {
