@@ -57,8 +57,6 @@ class CalendarAppController {
     let stateChangePromise;
     switch (newState) {
       case STATE.SHOW_SIGN_IN: {
-        this._loadingSpinner.classList.add('u-hidden');
-
         stateChangePromise = this.removeCurrentScreen()
         .then(() => {
           return window.GauntFace.loadHTMLImport(
@@ -68,12 +66,13 @@ class CalendarAppController {
           const signInScreen = document.createElement('gf-sign-in');
           signInScreen.userModel = this._userModel;
           return this.setCurrentScreen(signInScreen);
+        })
+        .then(() => {
+          this._loadingSpinner.classList.add('u-hidden');
         });
         break;
       }
       case STATE.LOAD_CALENDAR: {
-        this._loadingSpinner.classList.add('u-hidden');
-
         stateChangePromise = this.removeCurrentScreen()
         .then(() => {
           return window.GauntFace.loadHTMLImport(
@@ -83,6 +82,9 @@ class CalendarAppController {
           const calendarScreen = document.createElement('gf-calendar');
           calendarScreen.userModel = this._userModel;
           return this.setCurrentScreen(calendarScreen);
+        })
+        .then(() => {
+          this._loadingSpinner.classList.add('u-hidden');
         });
         break;
       }
@@ -104,7 +106,7 @@ class CalendarAppController {
     const mainElement = document.querySelector('main');
     mainElement.appendChild(newScreen);
 
-    return Promise.resolve();
+    return mainElement.ready;
   }
 }
 

@@ -6,16 +6,7 @@
   const currentScript = document._currentScript || document.currentScript;
   const componentDoc = currentScript.ownerDocument;
 
-  class GFCalendar extends HTMLElement {
-    constructor() {
-      super();
-
-      if (!window.GauntFace.loadHTMLImport) {
-        throw new Error('Unable to use GFCalendar screen since ' +
-          'window.GauntFace.loadHTMLImport doesn\'t load.');
-      }
-    }
-
+  class GFCalendar extends window.GauntFace.BaseScreenController {
     attachedCallback() {
       this.ready
       .then(() => {
@@ -74,7 +65,16 @@
     }
 
     createdCallback() {
-      this.ready = Promise.all([
+      super.createdCallback();
+
+      if (!window.GauntFace.loadHTMLImport) {
+        this.componentFailedToLoad(
+          new Error('Unable to use GFCalendar screen since ' +
+          'window.GauntFace.loadHTMLImport doesn\'t load.'));
+        return;
+      }
+
+      Promise.all([
         window.GauntFace.loadHTMLImport('/components/views/gf-weekinfo/' +
           'gf-weekinfo.html'),
         window.GauntFace.loadHTMLImport('/components/views/gf-weekdisplay/' +
@@ -95,6 +95,9 @@
           const clone = document.importNode(template.content, true);
           root.appendChild(clone);
         }
+      })
+      .then(() => {
+        this.componentLoaded();
       });
     }
   }

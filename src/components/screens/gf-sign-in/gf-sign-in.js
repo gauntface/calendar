@@ -4,7 +4,7 @@
   const currentScript = document._currentScript || document.currentScript;
   const componentDoc = currentScript.ownerDocument;
 
-  class GFSignIn extends HTMLElement {
+  class GFSignIn extends window.GauntFace.BaseScreenController {
     attachedCallback() {
       this._signInBtn = this.shadowRoot.querySelector('.js-sign-in');
       this._signInBtn.addEventListener('click', () => {
@@ -27,6 +27,8 @@
     }
 
     createdCallback() {
+      super.createdCallback();
+
       if ('attachShow' in this) {
         const root = this.attachShadow({mode: 'open'});
         const template = componentDoc.querySelector('template');
@@ -37,6 +39,8 @@
         const clone = document.importNode(template.content, true);
         root.appendChild(clone);
       }
+
+      this.componentLoaded();
     }
   }
 
