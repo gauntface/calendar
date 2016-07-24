@@ -1,11 +1,14 @@
-:host ol {
+/**
+ * Should be :host but doesn't work in non-supporting browsers
+ */
+gf-edit-list ol {
   width: 220px;
   padding-left: 0;
   margin:0;
   list-style: none;
 }
 
-:host li {
+gf-edit-list li {
   border-bottom-style: dotted;
   border-bottom-width: 2px;
 }

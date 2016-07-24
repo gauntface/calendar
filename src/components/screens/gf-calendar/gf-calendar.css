@@ -1,4 +1,7 @@
-:host {
+/**
+ * Should be :host but doesn't work in non-supporting browsers
+ */
+gf-calendar {
   width: 100%;
   flex: 1;
 
@@ -6,7 +9,7 @@
   flex-direction: column;
 }
 
-:host .top-header {
+gf-calendar .top-header {
   display: flex;
 
   padding-top: var(--base-line);

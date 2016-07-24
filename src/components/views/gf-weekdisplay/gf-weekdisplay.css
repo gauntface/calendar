@@ -1,11 +1,14 @@
-:host {
+/**
+ * Should be :host but doesn't work in non-supporting browsers
+ */
+gf-weekdisplay {
   display: flex;
   flex-direction: column;
   flex: 1;
   position: relative;
 }
 
-:host .weekday {
+gf-weekdisplay .weekday {
   margin: 0 var(--base-line);
   flex: 1;
 }
@@ -20,7 +23,7 @@
 }
 
 @media (min-width: 720px) {
-  :host {
+  gf-weekdisplay {
     display: flex;
     flex-direction: row;
     flex: 1;

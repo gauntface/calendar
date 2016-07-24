@@ -1,0 +1,7 @@
+/**
+ * Should be :host but doesn't work in non-supporting browsers
+ */
+gf-drawing-canvas {
+  /** Here to make Firebase hosting return CSS **/
+  display: none;
+}

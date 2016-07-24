@@ -1,4 +1,7 @@
-:host h1 {
+/**
+ * Should be :host but doesn't work in non-supporting browsers
+ */
+gf-weekinfo h1 {
   margin-top: 0;
   margin-bottom: 0;
   font-size: calc(var(--base-line) * 2);

@@ -1,4 +1,7 @@
-:host {
+/**
+ * Should be :host but doesn't work in non-supporting browsers
+ */
+gf-sign-in {
   display: flex;
   flex-direction: column;
   justify-content: center;
