@@ -8,7 +8,7 @@
 
   class GFCalendar extends window.GauntFace.BaseScreenController {
     attachedCallback() {
-      this.ready
+      this.ready = this.ready
       .then(() => {
         this._weekInfoComponent = this.shadowRoot.querySelector(
           '.js-weekinfo');

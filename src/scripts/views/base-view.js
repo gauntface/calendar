@@ -7,23 +7,11 @@ class BaseView extends HTMLElement {
       this._rejectReject = reject;
     })
     .then(() => {
-      console.log('Shimming Styles for ' + this.tagName);
       window.WebComponents.ShadowCSS.shimStyling(this.shadowRoot, this.tagName);
     });
   }
 
   componentLoaded() {
-    const scriptElements = this.shadowRoot.querySelectorAll('script');
-    const styleElements = this.shadowRoot.querySelectorAll('style');
-
-    if (scriptElements.length > 0) {
-      console.log('Scripts: ', scriptElements);
-    }
-
-    if (styleElements.length > 0) {
-      console.log('Styles: ', styleElements);
-    }
-
     this._readyResolve();
   }
 
@@ -34,5 +22,3 @@ class BaseView extends HTMLElement {
 
 window.GauntFace = window.GauntFace || {};
 window.GauntFace.BaseView = window.GauntFace.BaseView || BaseView;
-
-console.log('Hello from: window.GauntFace.BaseView');

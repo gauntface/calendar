@@ -32,13 +32,13 @@ class CalendarAppController {
     };
     firebase.initializeApp(firebaseConfig);
 
-    this._userModel.isSignedIn()
+    return this._userModel.isSignedIn()
     .then(isSignedIn => {
       if (isSignedIn) {
-        this.setState(STATE.LOAD_CALENDAR);
-      } else {
-        this.setState(STATE.SHOW_SIGN_IN);
+        return this.setState(STATE.LOAD_CALENDAR);
       }
+
+      return this.setState(STATE.SHOW_SIGN_IN);
     })
     .then(() => {
       // This is here for easy testing
@@ -81,7 +81,9 @@ class CalendarAppController {
         .then(() => {
           const calendarScreen = document.createElement('gf-calendar');
           calendarScreen.userModel = this._userModel;
-          return this.setCurrentScreen(calendarScreen);
+          return calendarScreen.ready.then(() => {
+            return this.setCurrentScreen(calendarScreen);
+          });
         })
         .then(() => {
           this._loadingSpinner.classList.add('u-hidden');
@@ -92,7 +94,7 @@ class CalendarAppController {
         throw new Error(`Unknown state given: ${newState}`);
     }
 
-    stateChangePromise.then(() => {
+    return stateChangePromise.then(() => {
       this._currentState = newState;
       this._pendingStateChange = false;
     });

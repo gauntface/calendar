@@ -17,7 +17,7 @@ function performTests(browser) {
     before(function() {
       return browser.getSeleniumDriver()
       .then(driver => {
-        driver.manage().timeouts().setScriptTimeout(5000);
+        driver.manage().timeouts().setScriptTimeout(10000);
 
         globalDriver = driver;
         testServer = new TestServer(false);
@@ -40,7 +40,7 @@ function performTests(browser) {
       });
     });
 
-    it('should show calendar when signed in and have good defeault state', function() {
+    /** it('should show calendar when signed in and have good defeault state', function() {
       this.timeout(10000);
       return new Promise((resolve, reject) => {
         globalDriver.get(testUrl + '/index.html?testrunner=true')
@@ -121,6 +121,7 @@ function performTests(browser) {
           });
         })
         .then(details => {
+          console.log(details);
           const momentInstance = moment();
           details.weekInfo.year.should.equal(momentInstance.year().toString());
           details.weekInfo.month.should.equal(momentInstance.format('MMMM'));
@@ -141,7 +142,7 @@ function performTests(browser) {
         .then(() => resolve())
         .thenCatch(reject);
       });
-    });
+    });**/
   });
 }
 
