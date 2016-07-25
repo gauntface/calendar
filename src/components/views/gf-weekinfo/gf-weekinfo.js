@@ -6,7 +6,7 @@
   const currentScript = document._currentScript || document.currentScript;
   const componentDoc = currentScript.ownerDocument;
 
-  class GFWeekInfo extends HTMLElement {
+  class GFWeekInfo extends window.GauntFace.BaseView {
     attachedCallback() {
       this._yearElement = this.shadowRoot.querySelector('.js-weekinfo-year');
       this._monthElement = this.shadowRoot.querySelector('.js-weekinfo-month');
@@ -18,6 +18,8 @@
     }
 
     createdCallback() {
+      super.createdCallback();
+
       if ('attachShow' in this) {
         const root = this.attachShadow({mode: 'open'});
         const template = componentDoc.querySelector('template');
@@ -28,6 +30,8 @@
         const clone = document.importNode(template.content, true);
         root.appendChild(clone);
       }
+
+      this.componentLoaded();
     }
 
     setDate(newDate) {

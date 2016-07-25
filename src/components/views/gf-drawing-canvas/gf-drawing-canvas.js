@@ -4,7 +4,7 @@
   const currentScript = document._currentScript || document.currentScript;
   const componentDoc = currentScript.ownerDocument;
 
-  class GFDrawingCanvas extends HTMLElement {
+  class GFDrawingCanvas extends window.GauntFace.BaseView {
     constructor() {
       super();
 
@@ -22,10 +22,14 @@
     }
 
     createdCallback() {
+      super.createdCallback();
+
       const root = this.createShadowRoot();
       const template = componentDoc.querySelector('template');
       const clone = document.importNode(template.content, true);
       root.appendChild(clone);
+
+      this.componentLoaded();
     }
 
     waitForDimensions() {

@@ -4,12 +4,14 @@
   const currentScript = document._currentScript || document.currentScript;
   const componentDoc = currentScript.ownerDocument;
 
-  class GFSpinner extends HTMLElement {
+  class GFSpinner extends window.GauntFace.BaseView {
     attachedCallback() {
 
     }
 
     createdCallback() {
+      super.createdCallback();
+
       if ('attachShow' in this) {
         const root = this.attachShadow({mode: 'open'});
         const template = componentDoc.querySelector('template');
@@ -20,6 +22,8 @@
         const clone = document.importNode(template.content, true);
         root.appendChild(clone);
       }
+
+      this.componentLoaded();
     }
   }
 

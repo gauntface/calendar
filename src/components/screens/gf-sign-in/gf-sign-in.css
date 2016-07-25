@@ -1,9 +1,0 @@
-/**
- * Should be :host but doesn't work in non-supporting browsers
- */
-gf-sign-in, :host {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}

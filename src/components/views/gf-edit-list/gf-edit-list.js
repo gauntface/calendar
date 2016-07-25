@@ -7,7 +7,7 @@
   const MIN_LENGTH = 1;
   const MAX_LENGTH = 5;
 
-  class GFEditList extends HTMLElement {
+  class GFEditList extends window.GauntFace.BaseView {
     attachedCallback() {
       this._listElement = this.shadowRoot.querySelector('.js-list-element');
       const listItems = this._listElement.querySelectorAll('li');
@@ -17,6 +17,8 @@
     }
 
     createdCallback() {
+      super.createdCallback();
+
       if ('attachShow' in this) {
         const root = this.attachShadow({mode: 'open'});
         const template = componentDoc.querySelector('template');
@@ -27,6 +29,8 @@
         const clone = document.importNode(template.content, true);
         root.appendChild(clone);
       }
+
+      this.componentLoaded();
     }
 
     _clearListElements() {
