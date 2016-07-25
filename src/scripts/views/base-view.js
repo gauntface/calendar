@@ -7,7 +7,10 @@ class BaseView extends HTMLElement {
       this._rejectReject = reject;
     })
     .then(() => {
-      window.WebComponents.ShadowCSS.shimStyling(this.shadowRoot, this.tagName);
+      if (window.WebComponents.ShadowCSS) {
+        window.WebComponents.ShadowCSS.shimStyling(
+          this.shadowRoot, this.tagName);
+      }
     });
   }
 
