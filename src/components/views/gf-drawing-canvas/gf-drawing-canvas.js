@@ -187,7 +187,8 @@
       this._canvasContext.moveTo(fromPoint.x, fromPoint.y);
       this._canvasContext.lineTo(toPoint.x, toPoint.y);
       this._canvasContext.lineWidth = 1;
-      this._canvasContext.strokeStyle = `rgba(0, 0, 0, ${toPoint.data.pressure})`;
+      this._canvasContext.strokeStyle = `rgba(0, 0, 0, ` +
+        `${toPoint.data.pressure})`;
       this._canvasContext.stroke();
     }
 
