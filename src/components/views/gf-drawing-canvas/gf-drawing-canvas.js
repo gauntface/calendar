@@ -5,20 +5,14 @@
   const componentDoc = currentScript.ownerDocument;
 
   class GFDrawingCanvas extends window.GauntFace.BaseView {
-    constructor() {
-      super();
-
-      this._debugMode = true;
-
-      this._paths = [];
-      this._currentPath = null;
-
-      this.waitForDimensions.bind(this);
-      this.onResize.bind(this);
-    }
-
     attachedCallback() {
+      this._canvasArea = this.shadowRoot.querySelector('.js-canvas-area');
+      this._canvasContext = this._canvasArea.getContext('2d');
 
+      this.waitForDimensions()
+      .then(() => {
+        return this.prepareDrawingEvents();
+      });
     }
 
     createdCallback() {
@@ -29,13 +23,21 @@
       const clone = document.importNode(template.content, true);
       root.appendChild(clone);
 
-      this.componentLoaded();
+      this._debugMode = true;
+
+      this._paths = [];
+      this._currentPath = null;
+
+      this.waitForDimensions.bind(this);
+      this.onResize.bind(this);
+
+      return this.componentLoaded();
     }
 
     waitForDimensions() {
       return new Promise(resolve => {
-        let width = this._canvasArea.parentElement.offsetWidth;
-        let height = this._canvasArea.parentElement.offsetHeight;
+        let width = this.offsetWidth;
+        let height = this.offsetHeight;
 
         if (width === 0 || height === 0) {
           requestAnimationFrame(this.waitForDimensions);
@@ -54,13 +56,12 @@
       console.log('onResize');
       let dPR = window.devicePixelRatio || 1;
 
-      // Switch off the canvas.
-      // TODO: Why?
+      // Switch off the canvas to get accurate parent measurement.
       this._canvasArea.style.display = 'none';
 
       // Find out how large the parent element is.
-      let width = this._canvasArea.parentElement.offsetWidth;
-      let height = this._canvasArea.parentElement.offsetHeight;
+      let width = this.offsetWidth;
+      let height = this.offsetHeight;
 
       // Switch it back on.
       this._canvasArea.style.display = 'block';
@@ -70,7 +71,7 @@
       this._canvasArea.height = height * dPR;
 
       // Draw Previous Drawings
-      this._paths.each(pathPoints => {
+      this._paths.forEach(pathPoints => {
         console.log('start pen draw');
         console.log(pathPoints[0]);
         this.startPenDraw(pathPoints[0]);
@@ -83,6 +84,10 @@
       });
     }
 
+    addPath(newDrawnPath) {
+      this._paths.push(newDrawnPath);
+    }
+
     prepareDrawingEvents() {
       if (!window.PointerEvent) {
         // Pointer events are supported.
@@ -90,22 +95,28 @@
       }
 
       let pointerStartHandler = event => {
-        if (event.pointerType !== 'pen' || event.pressure === 0) {
-          return;
+        // Allow mouse throw during debug mode.
+        if (!(this._debugMode && event.pointerType === 'mouse' &&
+          event.pressure > 0)) {
+          if (event.pointerType !== 'pen' || event.pressure === 0) {
+            return;
+          }
         }
 
         event.preventDefault();
 
         let point = this.getPointFromEvent(event);
-        this._currentPath = new DrawnPath();
+        this._currentPath = new window.GauntFace.DrawnPath();
         this._currentPath.addToPath(point);
 
         this.drawPathStart(point);
       };
 
       let pointerEndHandler = event => {
-        if (event.pointerType !== 'pen') {
-          return;
+        if (!(this._debugMode && event.pointerType === 'mouse')) {
+          if (event.pointerType !== 'pen') {
+            return;
+          }
         }
 
         event.preventDefault();
@@ -124,8 +135,11 @@
       };
 
       let pointerMoveHandler = event => {
-        if (event.pointerType !== 'pen' || event.pressure === 0) {
-          return;
+        if (!(this._debugMode && event.pointerType === 'mouse' &&
+          event.pressure > 0)) {
+          if (event.pointerType !== 'pen' || event.pressure === 0) {
+            return;
+          }
         }
 
         event.preventDefault();
@@ -141,21 +155,21 @@
         this.drawBetweenPoints(prevPoint, point);
       };
 
-      this._drawingArea.addEventListener('pointerdown', pointerStartHandler);
+      this.addEventListener('pointerdown', pointerStartHandler);
 
-      this._drawingArea.addEventListener('pointermove', pointerMoveHandler);
+      this.addEventListener('pointermove', pointerMoveHandler);
 
-      this._drawingArea.addEventListener('pointerup', pointerEndHandler);
+      this.addEventListener('pointerup', pointerEndHandler);
 
-      this._drawingArea.addEventListener('pointerenter', pointerStartHandler);
+      this.addEventListener('pointerenter', pointerStartHandler);
 
-      this._drawingArea.addEventListener('pointerleave', pointerEndHandler);
+      this.addEventListener('pointerleave', pointerEndHandler);
     }
 
     getPointFromEvent(event) {
       let dPR = window.devicePixelRatio || 1;
 
-      return new Point(
+      return new window.GauntFace.Point(
         event.offsetX * dPR,
         event.offsetY * dPR,
         {
