@@ -101,8 +101,8 @@ function performTests(browser) {
         })
         .then(() => {
           return globalDriver.executeScript(function() {
-            const weekInfo = document.querySelector('gf-calendar').shadowRoot.querySelector('gf-weekinfo');
-            const weekDisplay = document.querySelector('gf-calendar').shadowRoot.querySelector('gf-weekdisplay');
+            const weekInfo = document.querySelector('gf-calendar').querySelector('gf-weekinfo');
+            const weekDisplay = document.querySelector('gf-calendar').querySelector('gf-weekdisplay');
             const dayElements = weekDisplay.shadowRoot.querySelectorAll('.weekday');
             const dayData = [];
             for (var i = 0; i < dayElements.length; i++) {
