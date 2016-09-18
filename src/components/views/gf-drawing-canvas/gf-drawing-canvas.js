@@ -135,7 +135,6 @@
       };
 
       let pointerMoveHandler = event => {
-        console.log(event);
         if (!(this._debugMode && event.pointerType === 'mouse' &&
           event.pressure > 0)) {
           if (event.pointerType !== 'pen' || event.pressure === 0) {
@@ -198,6 +197,8 @@
     }
 
     drawBetweenPoints(fromPoint, toPoint) {
+      console.log('From: ', fromPoint);
+      console.log('To: ', toPoint);
       this._canvasContext.beginPath();
       this._canvasContext.moveTo(fromPoint.x, fromPoint.y);
       this._canvasContext.lineTo(toPoint.x, toPoint.y);
