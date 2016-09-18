@@ -10,11 +10,11 @@
     attachedCallback() {
       this.ready = this.ready
       .then(() => {
-        this._weekInfoComponent = this.shadowRoot.querySelector(
+        this._weekInfoComponent = this.querySelector(
           '.js-weekinfo');
-        this._weekDisplayComponent = this.shadowRoot.querySelector(
+        this._weekDisplayComponent = this.querySelector(
           '.js-weekdisplay');
-        this._quarterlyListComponent = this.shadowRoot.querySelector(
+        this._quarterlyListComponent = this.querySelector(
           '.js-edit-list-quarterly');
 
         this._currentMoment = moment();
@@ -72,15 +72,11 @@
           'gf-edit-list.html')
       ])
       .then(() => {
+        const template = componentDoc.querySelector('template');
         if ('attachShow' in this) {
-          const root = this.attachShadow({mode: 'open'});
-          const template = componentDoc.querySelector('template');
-          root.appendChild(template.content.cloneNode(true));
+          this.appendChild(template.content.cloneNode(true));
         } else {
-          const root = this.createShadowRoot();
-          const template = componentDoc.querySelector('template');
-          const clone = document.importNode(template.content, true);
-          root.appendChild(clone);
+          this.appendChild(document.importNode(template.content, true));
         }
       })
       .then(() => {

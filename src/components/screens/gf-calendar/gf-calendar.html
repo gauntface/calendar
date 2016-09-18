@@ -1,6 +1,6 @@
 <template>
   <style>
-  :host {
+  gf-calendar {
     width: 100%;
     flex: 1;
 
@@ -8,7 +8,7 @@
     flex-direction: column;
   }
 
-  :host .top-header {
+  gf-calendar .top-header {
     display: flex;
 
     padding-top: var(--base-line);
@@ -18,7 +18,7 @@
     justify-content: space-between;
   }
 
-  :host gf-weekdisplay gf-drawing-canvas {
+  gf-calendar gf-drawing-canvas {
     position: absolute;
     top: 0;
     left: 0;
@@ -35,8 +35,9 @@
   </header>
 
   <gf-weekdisplay class="js-weekdisplay">
-    <gf-drawing-canvas class="js-drawing-canvas"></gf-drawing-canvas>
   </gf-weekdisplay>
+
+  <gf-drawing-canvas class="js-drawing-canvas"></gf-drawing-canvas>
 </template>
 
 <script src="gf-calendar.js"></script>

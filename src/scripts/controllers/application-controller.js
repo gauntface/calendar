@@ -22,6 +22,12 @@ class CalendarAppController {
   }
 
   initialise() {
+    if (!window.firebase) {
+      console.warn('Firebase is not available.');
+      this.loaded = true;
+      return this.setState(STATE.SHOW_SIGN_IN);
+    }
+
     this._userModel = new window.GauntFace.UserModel();
 
     const firebaseConfig = {

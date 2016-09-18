@@ -6,7 +6,7 @@
 
   class GFSignIn extends window.GauntFace.BaseScreenController {
     attachedCallback() {
-      this._signInBtn = this.shadowRoot.querySelector('.js-sign-in');
+      this._signInBtn = this.querySelector('.js-sign-in');
       this._signInBtn.addEventListener('click', () => {
         if (!this.userModel) {
           console.error('ERROR: No \'userModel\' set on this screen');
@@ -29,15 +29,11 @@
     createdCallback() {
       super.createdCallback();
 
+      const template = componentDoc.querySelector('template');
       if ('attachShow' in this) {
-        const root = this.attachShadow({mode: 'open'});
-        const template = componentDoc.querySelector('template');
-        root.appendChild(template.content.cloneNode(true));
+        this.appendChild(template.content.cloneNode(true));
       } else {
-        const root = this.createShadowRoot();
-        const template = componentDoc.querySelector('template');
-        const clone = document.importNode(template.content, true);
-        root.appendChild(clone);
+        this.appendChild(document.importNode(template.content, true));
       }
 
       this.componentLoaded();
