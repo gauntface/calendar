@@ -23,7 +23,11 @@
           `${this._currentMoment.year()}/quarter-list/` +
           `${this._currentMoment.quarter()}/`)
           .once('value', snapshot => {
-            this._quarterlyListComponent.setData(snapshot.val());
+            let value = snapshot.val();
+            if (!value) {
+              value = [];
+            }
+            this._quarterlyListComponent.setData(value);
           }
         );
 

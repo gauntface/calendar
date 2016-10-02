@@ -41,7 +41,7 @@
     }
 
     setData(newData) {
-      if (typeof newData !== 'object') {
+      if (!newData || typeof newData !== 'object') {
         throw new Error('setData() expects an instance of an array');
       }
 

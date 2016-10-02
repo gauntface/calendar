@@ -28,8 +28,6 @@ class CalendarAppController {
       return this.setState(STATE.SHOW_SIGN_IN);
     }
 
-    this._userModel = new window.GauntFace.UserModel();
-
     const firebaseConfig = {
       apiKey: "AIzaSyCv-BqXZG2PF34ho97rwU63hPUcxBC2vKs",
       authDomain: "calendar-8fc2d.firebaseapp.com",
@@ -37,6 +35,8 @@ class CalendarAppController {
       storageBucket: "calendar-8fc2d.appspot.com"
     };
     firebase.initializeApp(firebaseConfig);
+
+    this._userModel = new window.GauntFace.UserModel();
 
     return this._userModel.isSignedIn()
     .then(isSignedIn => {

@@ -24,10 +24,6 @@ gulp.task('dev-site', () => {
   .pipe(gulp.dest(BUILD_OUTPUT_PATH));
 });
 
-gulp.task('watch', () => {
-  gulp.watch(SRC_PATH + '/**/*', gulp.series('build'));
-});
-
 gulp.task('server', () => {
   connect.server({
     port: 8888,
@@ -50,6 +46,4 @@ gulp.task('css-next', () => {
 
 gulp.task('build', gulp.series('clean', 'dev-site', 'css-next'));
 
-gulp.task('dev', gulp.series('server', 'watch'));
-
-gulp.task('default', gulp.series('dev'));
+gulp.task('default', gulp.series('server'));
