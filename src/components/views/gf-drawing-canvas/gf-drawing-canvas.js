@@ -28,18 +28,15 @@
       this._paths = [];
       this._currentPath = null;
 
-      this.waitForDimensions.bind(this);
-      this.onResize.bind(this);
+      this.waitForDimensions = this.waitForDimensions.bind(this);
+      this.onResize = this.onResize.bind(this);
 
       return this.componentLoaded();
     }
 
     waitForDimensions() {
       return new Promise(resolve => {
-        let width = this.offsetWidth;
-        let height = this.offsetHeight;
-
-        if (width === 0 || height === 0) {
+        if (this.offsetWidth === 0 || this.offsetHeight === 0) {
           requestAnimationFrame(this.waitForDimensions);
           return;
         }
@@ -53,7 +50,6 @@
     }
 
     onResize() {
-      console.log('onResize');
       let dPR = window.devicePixelRatio || 1;
 
       // Switch off the canvas to get accurate parent measurement.
@@ -62,6 +58,11 @@
       // Find out how large the parent element is.
       let width = this.offsetWidth;
       let height = this.offsetHeight;
+
+      if (width === 0 || height === 0) {
+        requestAnimationFrame(this.waitForDimensions);
+        return;
+      }
 
       // Switch it back on.
       this._canvasArea.style.display = 'block';
