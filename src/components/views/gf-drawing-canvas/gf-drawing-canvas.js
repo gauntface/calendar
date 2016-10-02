@@ -73,14 +73,10 @@
 
       // Draw Previous Drawings
       this._paths.forEach(pathPoints => {
-        console.log('start pen draw');
-        console.log(pathPoints[0]);
         this.startPenDraw(pathPoints[0]);
         for (var i = 1; i < pathPoints.length - 1; i++) {
-          console.log('draw ' + i);
           this.penMove(pathPoints[i - 1], pathPoints[i]);
         }
-        console.log('end pen draw');
         this.endPenDraw(pathPoints[pathPoints.length - 1]);
       });
     }
@@ -168,11 +164,11 @@
     }
 
     getPointFromEvent(event) {
-      let dPR = window.devicePixelRatio || 1;
+      // let dPR = window.devicePixelRatio || 1;
 
       return new window.GauntFace.Point(
-        event.offsetX * dPR,
-        event.offsetY * dPR,
+        event.offsetX,
+        event.offsetY,
         {
           pressure: event.pressure
         }
