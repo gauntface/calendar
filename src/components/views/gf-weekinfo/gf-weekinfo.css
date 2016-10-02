@@ -1,0 +1,30 @@
+:host h1 {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: calc(var(--base-line) * 2);
+  line-height: 1;
+}
+
+:host .next-prev {
+  font-family: var(--title-font-family);
+}
+
+:host .next-prev:after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+:host .next-prev a {
+  color: var(--link-text-color);
+  text-decoration: none;
+  padding: var(--base-line) 0;
+}
+
+:host .next-prev a:first-child {
+  float: left;
+}
+
+:host .next-prev a:last-child {
+  float: right;
+}
