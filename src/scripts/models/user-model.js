@@ -54,8 +54,8 @@ class UserModel {
   }
 
   signIn() {
-    // var provider = new firebase.auth.GoogleAuthProvider();
-    // return firebase.auth().signInWithRedirect(provider);
+    var provider = new firebase.auth.GoogleAuthProvider();
+    return firebase.auth().signInWithRedirect(provider);
   }
 
   signOut() {

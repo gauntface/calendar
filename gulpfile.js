@@ -16,7 +16,7 @@ gulp.task('clean', () => {
   return del([BUILD_OUTPUT_PATH]);
 });
 
-gulp.task('dev-site', () => {
+gulp.task('site', () => {
   return gulp.src([
     `!${SRC_PATH}/**/*.css`,
     `${SRC_PATH}/**/*`
@@ -29,6 +29,17 @@ gulp.task('server', () => {
     port: 8888,
     root: SRC_PATH
   });
+});
+
+gulp.task('prod-server', () => {
+  connect.server({
+    port: 8889,
+    root: BUILD_OUTPUT_PATH
+  });
+});
+
+gulp.task('watch', () => {
+  gulp.watch(SRC_PATH + '/**/*', gulp.series('build'));
 });
 
 gulp.task('css-next', () => {
@@ -44,6 +55,8 @@ gulp.task('css-next', () => {
   .pipe(gulp.dest(BUILD_OUTPUT_PATH));
 });
 
-gulp.task('build', gulp.series('clean', 'dev-site', 'css-next'));
+gulp.task('build', gulp.series('clean', 'site', 'css-next'));
+
+gulp.task('prod', gulp.series('build', gulp.parallel('watch', 'prod-server')));
 
 gulp.task('default', gulp.series('server'));

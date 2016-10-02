@@ -1,3 +1,7 @@
+@import "../../../styles/variables/dimens.css";
+@import "../../../styles/variables/fonts.css";
+@import "../../../styles/variables/colors.css";
+
 :host h1 {
   margin-top: 0;
   margin-bottom: 0;
