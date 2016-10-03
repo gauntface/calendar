@@ -118,6 +118,11 @@
           }
         }
 
+        // If eraser button is pressed, return
+        if (event.button === 5) {
+          return;
+        }
+
         event.preventDefault();
 
         let point = this.getPointFromEvent(event);
@@ -133,6 +138,11 @@
           if (event.pointerType !== 'pen') {
             return;
           }
+        }
+
+        // If eraser button is pressed, return
+        if (event.button === 5) {
+          return;
         }
 
         event.preventDefault();
@@ -157,6 +167,11 @@
           if (event.pointerType !== 'pen' || event.pressure === 0) {
             return;
           }
+        }
+
+        // If eraser button is pressed, return
+        if (event.button === 5) {
+          return;
         }
 
         event.preventDefault();
