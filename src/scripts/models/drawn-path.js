@@ -5,6 +5,10 @@ class DrawnPath {
     this._pointsOnPath = [];
   }
 
+  getPointsOnPath() {
+    return this._pointsOnPath;
+  }
+
   addToPath(newPoint) {
     this._pointsOnPath.push(newPoint);
   }

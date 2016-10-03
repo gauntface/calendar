@@ -16,6 +16,7 @@
           '.js-weekdisplay');
         this._quarterlyListComponent = this.querySelector(
           '.js-edit-list-quarterly');
+        this._drawingCanvas = this.querySelector('.js-drawing-canvas');
 
         this._currentMoment = moment();
 
@@ -28,6 +29,18 @@
               value = [];
             }
             this._quarterlyListComponent.setData(value);
+          }
+        );
+
+        window.firebase.database().ref(`users/${this.userModel.userID}/` +
+          `${this._currentMoment.year()}/week-drawings/` +
+          `${this._currentMoment.isoWeek()}/`)
+          .once('value', snapshot => {
+            let value = snapshot.val();
+            if (!value) {
+              value = [];
+            }
+            this._drawingCanvas.setPaths(value);
           }
         );
 
@@ -51,6 +64,31 @@
           }
 
           this._quarterlyListComponent.updateList();
+        });
+
+        this._drawingCanvas.addEventListener('paths-change', event => {
+          console.log('Paths Change');
+          const pathList = event.detail;
+          const filteredList = pathList.filter(pathItem => {
+            return pathItem.getPointsOnPath().length > 0;
+          });
+          const pathPoints = filteredList.map(pathItem => {
+            return pathItem.getPointsOnPath().map(point => {
+              return point.getAsObject();
+            });
+          });
+
+          // Update firebase
+          if (window.firebase) {
+            const weekDrawingsRef = window.firebase.database()
+              .ref(`users/${this.userModel.userID}/` +
+              `${this._currentMoment.year()}/week-drawings/` +
+              `${this._currentMoment.isoWeek()}/`);
+            weekDrawingsRef.set(pathPoints);
+          } else {
+            console.warn('No firebase object set - unable to save ' +
+              'quarterly goals.');
+          }
         });
       });
     }

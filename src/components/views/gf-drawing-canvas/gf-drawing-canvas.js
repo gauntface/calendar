@@ -34,6 +34,18 @@
       return this.componentLoaded();
     }
 
+    setPaths(paths) {
+      if (paths.length === 0) {
+        return;
+      }
+
+      paths.forEach(path => {
+        this._paths.push(path);
+      });
+
+      this.refreshCanvas();
+    }
+
     waitForDimensions() {
       return new Promise(resolve => {
         if (this.offsetWidth === 0 || this.offsetHeight === 0) {
@@ -70,19 +82,24 @@
       // Scale the backing store by the dPR.
       this._canvasArea.width = width * dPR;
       this._canvasArea.height = height * dPR;
+    }
 
+    refreshCanvas() {
       // Draw Previous Drawings
       this._paths.forEach(pathPoints => {
-        this.startPenDraw(pathPoints[0]);
+        this.drawPathStart(pathPoints[0]);
         for (var i = 1; i < pathPoints.length - 1; i++) {
-          this.penMove(pathPoints[i - 1], pathPoints[i]);
+          this.drawBetweenPoints(pathPoints[i - 1], pathPoints[i]);
         }
-        this.endPenDraw(pathPoints[pathPoints.length - 1]);
+        this.drawPathEnd(pathPoints[pathPoints.length - 1]);
       });
     }
 
     addPath(newDrawnPath) {
       this._paths.push(newDrawnPath);
+
+      const event = new CustomEvent('paths-change', {detail: this._paths});
+      this.dispatchEvent(event);
     }
 
     prepareDrawingEvents() {
@@ -194,8 +211,8 @@
     }
 
     drawBetweenPoints(fromPoint, toPoint) {
-      console.log('From: ', fromPoint);
-      console.log('To: ', toPoint);
+      // console.log('From: ', fromPoint);
+      // console.log('To: ', toPoint);
       this._canvasContext.beginPath();
       this._canvasContext.moveTo(fromPoint.x, fromPoint.y);
       this._canvasContext.lineTo(toPoint.x, toPoint.y);

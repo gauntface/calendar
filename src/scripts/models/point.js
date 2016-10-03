@@ -18,6 +18,14 @@ class Point {
   get data() {
     return this._data;
   }
+
+  getAsObject() {
+    return {
+      x: this._xcoord,
+      y: this._ycoord,
+      data: this._data
+    };
+  }
 }
 
 window.GauntFace = window.GauntFace || {};
