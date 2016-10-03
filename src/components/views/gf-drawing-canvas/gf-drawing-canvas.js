@@ -109,7 +109,6 @@
       }
 
       let pointerStartHandler = event => {
-        console.log(event);
         // Allow mouse throw during debug mode.
         if (!(this._debugMode && event.pointerType === 'mouse' &&
           event.pressure > 0)) {
@@ -150,6 +149,7 @@
       };
 
       let pointerMoveHandler = event => {
+        console.log(event);
         if (!(this._debugMode && event.pointerType === 'mouse' &&
           event.pressure > 0)) {
           if (event.pointerType !== 'pen' || event.pressure === 0) {
